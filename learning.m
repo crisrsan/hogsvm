@@ -50,9 +50,7 @@ while (F > F_target)
     end
     for i=(length(neg_info)+1):total_samples
         W(i,1) = 1/(2*length(pos_info));
-    end
-
-    
+    end 
         
     %TRAIN LEVEL i --> Return variables: f
    	while (f > fmax)
@@ -62,7 +60,9 @@ while (F > F_target)
         weak_svm
 		% COMPUTE STRONG CLASSIFIER - ADD NEW SVM
         % I should create here a file with the INFO - But I still don't
-        % know how to store structs. 
+        % know how to store structs.
+        matfile = strcat('weak_svm_', i, k);
+        save 'weak_svm_' weak_svm
         region (i,k) = weak_region;
         svm (i,k) = weak_svm;
         alpha (i,k) = weak_alpha;
