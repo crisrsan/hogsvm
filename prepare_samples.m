@@ -4,25 +4,13 @@
 
 function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives, path_rid)
 	
-  
-	
-   %CREATE THE LIST FOR NEGATIVES/POSITIVES IF IT DOESN'T EXIST (ONLY THE FIRST TIME)
-%   neg_dir = dir(path_negatives);
-%   f = fopen(strcat(path_negatives, 'list.txt'), 'w');
-%     for i=3:length(neg_dir)
-%         if(~strcmp(neg_dir(i).name,'list.txt')) 
-%             fprintf(f, '%s', neg_dir(i).name);
-%             fprintf(f, '\n');
-%         end
-%     end
-%     fclose(f);
-    
-
     %NEGATIVES%
    	neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
     i=1;
-    f = fopen(strcat(path_negatives, 'list.txt'), 'r');
+    %f = fopen(strcat(path_negatives, 'list.txt'), 'r');
+    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    
 	while(~feof(f))
         name = fscanf(f,'%s', 1);
         name
@@ -39,13 +27,16 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
         i = i+1;
         end
     end
-
+    fclose(f);
+    
     %POSITIVES%
 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
 	i=1;
-	f= fopen(strcat(path_positives, 'list.txt'), 'r');
-	while (~feof(f)) % !!! ERROR AL ACCEDIR A ÚLTIMA IMATGE, PERQUÉ ESTÁ EN BLANC!
+	%f= fopen(strcat(path_positives, 'list.txt'), 'r');
+    f = fopen(strcat(path_positives, 'prova.txt'), 'r');
+    
+	while (~feof(f)) %
         name = fscanf(f,'%s', 1);
         if(~isempty(name))
             pos_info(i).filename = name;
