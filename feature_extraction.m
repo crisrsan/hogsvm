@@ -25,7 +25,7 @@ function [ T, G, region ] = feature_extraction(pos_info, neg_info, path_rid, pat
  else %4rt quadrant
     b = min((1-region(1)),(1-region(2)));
  end
- a = 0.01;
+ a = 0.1;
  region(1,3) = a + (b-a)*rand;
  
  region

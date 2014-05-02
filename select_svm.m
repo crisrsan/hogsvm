@@ -28,8 +28,11 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
     	% TRAIN SVM (svmtrain)
         disp('Training linear SVM..');
         options.MaxIter = 100000;
-        svm = svmtrain(T,G, 'Options', options);
-        
+        try
+            svm = svmtrain(T,G, 'Options', options);
+        catch
+            continue
+        end
    		% COMPUTE ERROR
         % Group = svmclassify (SVMStruct, Sample)
         % !!!! SHOULD THIS BE COMPUTED WITH THE SAME T ? IS THE SAME RES
@@ -58,7 +61,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
             G_out=G;
         end
         if(error == 0)
-            i=n;
+            break;
         end
 	end
 	feature

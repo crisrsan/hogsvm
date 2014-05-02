@@ -140,7 +140,8 @@ while (F > F_target)
             disp('True positive rate - false positive rate...');
             disp(TPR);
             disp(FPR)
-            th = th / 1.05;
+            th = th- 0.01;
+            tp =0; fn = 0; fp = 0; tn = 0;
         end
         
 		% GET THRESHOLD
