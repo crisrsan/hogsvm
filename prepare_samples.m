@@ -4,32 +4,33 @@
 
 function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives, path_rid)
 	
-    %NEGATIVES%
-   	neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
+%CREATE THE COMPLETE LIST FOR NEGATIVES/POSITIVES IF IT DOESN'T EXIST (ONLY THE FIRST TIME)
+% pos_dir = dir(path_positives);
+% f_init = fopen(strcat(path_positives, 'list.txt'), 'w');
+% for i=3:length(pos_dir)
+%     if(~strcmp(pos_dir(i).name,'list.txt')) 
+%             fprintf(f_init, '%s', pos_dir(i).name);
+%             fprintf(f_init, '\n');
+%     end
+%  end
+%  fclose(f_init);
 
-    i=1;
-    %f = fopen(strcat(path_negatives, 'list.txt'), 'r');
-    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
-    
-	while(~feof(f))
-        name = fscanf(f,'%s', 1);
-        name
-        if(~isempty(name))
-            neg_info(i).filename = name;
-            im=imfinfo(strcat(path_negatives, neg_info(i).filename)); %Filename, Width, Heigth
-            neg_info(i).width = im.Width;
-            neg_info(i).height=im.Height;
-            neg_info(i).row = 0;
-            neg_info(i).col = 0;
-            neg_info(i).size = 0;
-		%CONVERT NEGATIVES TO RID
-		img2rid(neg_info(i).filename, im.Filename, path_rid);
-        i = i+1;
-        end
-    end
-    fclose(f);
-    
-    %POSITIVES%
+% neg_dir = dir(path_negatives);
+% f_init = fopen(strcat(path_negatives, 'list.txt'), 'w');
+% for i=3:length(neg_dir)
+%     if(~strcmp(neg_dir(i).name,'list.txt')) 
+%             fprintf(f_init, '%s', neg_dir(i).name);
+%             fprintf(f_init, '\n');
+%     end
+%  end
+%  fclose(f_init);
+
+copyfile('/nobackup/server/users/criru691/Dataset/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/negatives/prova.txt');
+copyfile('/nobackup/server/users/criru691/Dataset/prova_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/positives/inria/Train/prova.txt');
+
+%POSITIVES%
+    disp('Preparing positive samples (pedestrian images) from ');
+    disp(path_positives);
 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
 	i=1;
@@ -52,7 +53,34 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 		i=i+1;
         end
 	end
-	fclose(f);
+	fclose(f);    
 
 
+%NEGATIVES%
+    disp('Preparing negative samples (background images) from ');
+    disp(path_negatives);
+   	neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
+
+    i=1;
+    %f = fopen(strcat(path_negatives, 'list.txt'), 'r');
+    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    
+	while(~feof(f))
+        name = fscanf(f,'%s', 1);
+        if(~isempty(name))
+            neg_info(i).filename = name;
+            im=imfinfo(strcat(path_negatives, neg_info(i).filename)); %Filename, Width, Heigth
+            neg_info(i).width = im.Width;
+            neg_info(i).height=im.Height;
+            neg_info(i).row = 0;
+            neg_info(i).col = 0;
+            neg_info(i).size = 0;
+		%CONVERT NEGATIVES TO RID
+		img2rid(neg_info(i).filename, im.Filename, path_rid);
+        i = i+1;
+        end
+    end
+    fclose(f);
+    
+    
 end

@@ -21,7 +21,7 @@ fwrite(f, im, 'uint8');
 %fprintf(f, '%d', int32(info.Height));
 %fprintf(f, '%u', uint8(im));
 
-fclose(f)
+fclose(f);
 
 y=1;
 end
