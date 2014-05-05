@@ -95,7 +95,7 @@ while (F > F_target)
         fprintf(f_out, ' ');
     
         th = th+(0.5*weak_alpha); % Classification Threshold - Is it different for every level?
-        
+        TPR = 0; % Empty every round?
         while (TPR < dmin)
             
             disp('Evaluating strong classifier, with threshold...');
@@ -133,6 +133,7 @@ while (F > F_target)
                 TPR = tp / (tp+fn);
                 FPR = fp / (fp+tn);
             end
+            
             tp
             fn
             fp
@@ -143,6 +144,10 @@ while (F > F_target)
             th = th- 0.01;
             tp =0; fn = 0; fp = 0; tn = 0;
         end
+        fprintf(file, '%s', strcat('TPR: ', num2str(TPR)));
+        fprintf(file, '\n');
+        fprintf(file, '%s', strcat('FPR: ', num2str(FPR)));
+        fprintf(file, '\n');
         
 		% GET THRESHOLD
         fprintf(f_out, '%d', th);

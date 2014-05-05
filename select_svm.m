@@ -31,6 +31,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
         try
             svm = svmtrain(T,G, 'Options', options);
         catch
+            disp('ERROR: Not possible to find convergence.');
             continue
         end
    		% COMPUTE ERROR
