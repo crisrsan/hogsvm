@@ -16,8 +16,8 @@ fmax = 0.7;         % FPR cascade level target
 dmin = 0.9975;      % TPR cascade level target
 th = 0;           % Classification Threshold - Is it different for every level?
 
-path_negatives='/nobackup/server/users/criru691/Dataset/INRIA/negatives/';
-path_positives='/nobackup/server/users/criru691/Dataset/INRIA/positives/inria/Train/';
+path_negatives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/';
+path_positives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_positives/';
 path_rid = '/nobackup/server/users/criru691/Dataset/INRIA/rid/';
 
 % SAMPLES INITIZALIZATION % 
@@ -74,6 +74,10 @@ while (F > F_target)
         % COMPUTE linear SVM classifier
 		[weak_svm, weak_region, weak_alpha, W, T, G] = select_svm (neg_info, pos_info, path_rid, path_positives, path_negatives, W);
         %[weak_svm, weak_region, weak_alpha, W] = select_svm (neg_info, pos_info, path_rid, W);
+        if (weak_region == 0)
+            k= k-1;
+            continue
+        end
         fprintf(file, '%s', strcat('Region: ', num2str(weak_region(1)), ' ', num2str(weak_region(2)), ' ', num2str(weak_region(3))));
         fprintf(file, '\n');
         fprintf(file, '%s', strcat('Alpha: ', num2str(weak_alpha)));
@@ -110,6 +114,7 @@ while (F > F_target)
                 reg(1,3) = str2double(fscanf(f_read,'%s', 1));
                 SVM_name = fscanf(f_read, '%s', 1);
                 a = str2double(fscanf(f_read, '%s', 1));
+                t = str2double(fscanf(f_read, '%s', 1));
                 structSVM = load (SVM_name);
                 %[T, G]=feature_extraction(reg, pos_info, neg_info, path_rid);
                 weak_res = (svmclassify (structSVM.weak_svm, T))*a;

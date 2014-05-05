@@ -15,18 +15,18 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 %  end
 %  fclose(f_init);
 
-% neg_dir = dir(path_negatives);
-% f_init = fopen(strcat(path_negatives, 'list.txt'), 'w');
-% for i=3:length(neg_dir)
-%     if(~strcmp(neg_dir(i).name,'list.txt')) 
-%             fprintf(f_init, '%s', neg_dir(i).name);
-%             fprintf(f_init, '\n');
-%     end
-%  end
-%  fclose(f_init);
+neg_dir = dir(path_negatives);
+f_init = fopen(strcat(path_negatives, 'list.txt'), 'w');
+for i=3:length(neg_dir)
+    if(~strcmp(neg_dir(i).name,'list.txt')) 
+            fprintf(f_init, '%s', neg_dir(i).name);
+            fprintf(f_init, '\n');
+    end
+ end
+ fclose(f_init);
 
-copyfile('/nobackup/server/users/criru691/Dataset/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/negatives/prova.txt');
-copyfile('/nobackup/server/users/criru691/Dataset/prova_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/positives/inria/Train/prova.txt');
+%copyfile('/nobackup/server/users/criru691/Dataset/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/negatives/prova.txt');
+%copyfile('/nobackup/server/users/criru691/Dataset/prova_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/positives/inria/Train/prova.txt');
 
 %POSITIVES%
     disp('Preparing positive samples (pedestrian images) from ');
@@ -34,8 +34,8 @@ copyfile('/nobackup/server/users/criru691/Dataset/prova_positives.txt','/nobacku
 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
 	i=1;
-	%f= fopen(strcat(path_positives, 'list.txt'), 'r');
-    f = fopen(strcat(path_positives, 'prova.txt'), 'r');
+	f= fopen(strcat(path_positives, 'list.txt'), 'r');
+    %f = fopen(strcat(path_positives, 'prova.txt'), 'r');
     
 	while (~feof(f)) %
         name = fscanf(f,'%s', 1);
@@ -60,24 +60,29 @@ copyfile('/nobackup/server/users/criru691/Dataset/prova_positives.txt','/nobacku
     disp('Preparing negative samples (background images) from ');
     disp(path_negatives);
    	neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
-
+    
+    w = 3; % Number of windows per negative image
     i=1;
-    %f = fopen(strcat(path_negatives, 'list.txt'), 'r');
-    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    f = fopen(strcat(path_negatives, 'list.txt'), 'r');
+    %f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
     
 	while(~feof(f))
         name = fscanf(f,'%s', 1);
         if(~isempty(name))
-            neg_info(i).filename = name;
-            im=imfinfo(strcat(path_negatives, neg_info(i).filename)); %Filename, Width, Heigth
-            neg_info(i).width = im.Width;
-            neg_info(i).height=im.Height;
-            neg_info(i).row = 0;
-            neg_info(i).col = 0;
-            neg_info(i).size = 0;
+            for j =0:(w-1) % GENERATE 3 TRAINING WINDOWS PER IMAGE
+                
+                neg_info(i+j).filename = name;
+                im=imfinfo(strcat(path_negatives, neg_info(i+j).filename)); %Filename, Width, Heigth
+                neg_info(i+j).width = im.Width;
+                neg_info(i+j).height=im.Height;                
+                neg_info(i+j).row = 64 + ((im.Height-64)-64)*rand;
+                neg_info(i+j).col = 32 + ((im.Width-32)-32)*rand;
+                neg_info(i+j).size = 128;
+           
+            end
 		%CONVERT NEGATIVES TO RID
 		img2rid(neg_info(i).filename, im.Filename, path_rid);
-        i = i+1;
+        i = i+w;
         end
     end
     fclose(f);

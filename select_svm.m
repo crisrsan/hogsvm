@@ -23,11 +23,11 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
     
 	for i=1:n
         % PREPARE TRAINING --> HOG EXTRACTION
-        [T, G, region]=feature_extraction(pos_info,neg_info,path_rid, path_positives, path_negatives, 0);
+        [T, G, region]=feature_extraction(pos_info,neg_info,path_rid, path_positives, path_negatives, 1);
                              
     	% TRAIN SVM (svmtrain)
         disp('Training linear SVM..');
-        options.MaxIter = 100000;
+        options.MaxIter = 1000;
         try
             svm = svmtrain(T,G, 'Options', options);
         catch
@@ -67,18 +67,29 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
 	end
 	feature
     error
-	% UPDATE WEIGHTS!!!
-    if(error~=0) 
-        beta = error / (1-error);
-        alpha = log(1/beta);
-    else
-        beta = 0;
-        alpha = 1;
-    end
-    for i=1:total_samples
-        W_out(i,1) = W_in(i,1) * (beta^(1-e(i,1)));
+    
+    % UPDATE WEIGHTS!!!
+    switch error
+        case inf
+            feature = 0;
+            svm_weak = 0;
+            alpha = 0;
+            T_out = 0;
+            G_out = 0;
+            W_out = W_in;
+        case 0
+            beta = 0;
+            alpha = 1;
+            W_out = W_in;
+        otherwise
+            beta = error/(1-error);
+            alpha = log(1/beta);
+            for i=1:total_samples
+                W_out(i,1) = W_in(i,1) * (beta^(1-e(i,1)));
+            end
     end
     
+   
     alpha
   
 %
