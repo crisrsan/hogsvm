@@ -120,6 +120,7 @@ while (F > F_target)
             reg(1,1) = str2double(fscanf(f_read,'%s', 1));
             reg(1,2) = str2double(fscanf(f_read,'%s', 1));
             reg(1,3) = str2double(fscanf(f_read,'%s', 1));
+            samples = str2double(fscanf(f_read,'%s', 1));
             for m=1:total_samples
                 for n=1:fv
                     HOG(m,n) = str2double(fscanf(f_read, '%s', 1));
@@ -130,7 +131,7 @@ while (F > F_target)
             %t = str2double(fscanf(f_read, '%s', 1));
             structSVM = load (SVM_name);
             % HIGH COMPUTATIONAL !!!!!!!!
-            %[T, G]=feature_extraction(reg, pos_info, neg_info, path_rid, path_positives, path_negatives, 0);
+            %[HOG, G]=feature_extraction(reg, pos_info, neg_info, path_rid, path_positives, path_negatives, 0);
             weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; %!!!!!!! ojuuuuuu la T varia per cada SVM - només actual ?
             res = res + weak_res;
             alpha = alpha + a;  
