@@ -35,11 +35,12 @@ F = 1.0; % Final accuracy: FPR
 TPR = 0;
 
 reg = zeros(1,3);
-
+fi = 0;
+k= 0; %Number of weak_classifers
 
 while (F > F_target)
 	i=i+1;
-    k = 0; % Number of weak_classifiers per stage
+   
 	f=1.0;
 	
    
@@ -115,26 +116,42 @@ while (F > F_target)
         alpha = 0;
         res = zeros(total_samples,1);
         f_read = fopen('classifiers/svm_classifier.txt', 'r');
+        
+        reg(1,1) = str2double(fscanf(f_read,'%s', 1));
         for j=1:k
             %NOW WE USE TRAINING SAMPLES
-            reg(1,1) = str2double(fscanf(f_read,'%s', 1));
             reg(1,2) = str2double(fscanf(f_read,'%s', 1));
             reg(1,3) = str2double(fscanf(f_read,'%s', 1));
             samples = str2double(fscanf(f_read,'%s', 1));
-            for m=1:total_samples
+            if (res ==0) res = zeros (samples,1);
+            end
+            for m=1:samples
                 for n=1:fv
                     HOG(m,n) = str2double(fscanf(f_read, '%s', 1));
                 end
             end
             SVM_name = fscanf(f_read, '%s', 1);
             a = str2double(fscanf(f_read, '%s', 1));
-            %t = str2double(fscanf(f_read, '%s', 1));
+            
             structSVM = load (SVM_name);
             % HIGH COMPUTATIONAL !!!!!!!!
             %[HOG, G]=feature_extraction(reg, pos_info, neg_info, path_rid, path_positives, path_negatives, 0);
             weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; %!!!!!!! ojuuuuuu la T varia per cada SVM - només actual ?
             res = res + weak_res;
-            alpha = alpha + a;  
+            alpha = alpha + a;           
+            
+            fi = str2double(fscanf(f_read, '%s', 1));
+            if ( fi == 999999)
+                disp ('FINAL STAGE');
+                t = str2double(fscanf(f_read, '%s', 1));
+                reg(1,1) = str2double(fscanf(f_read,'%s', 1));
+                res = 0;
+                alpha = 0;
+            elseif (fi == 0)
+                break;
+            else
+                reg(1,1) = fi;
+            end
         end
         fclose(f_read);
         res      
@@ -146,7 +163,7 @@ while (F > F_target)
             tp =0; fn = 0; fp = 0; tn = 0;
             count = zeros(total_samples,1);
             tmp_neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
-            aux=0;
+            aux=1;
             %tmp_neg_info = 0;
             disp('Evaluating results with threshold...');
             disp(th);             
@@ -197,7 +214,7 @@ while (F > F_target)
         f
         TPR
     end
-    fprintf(f_out, '%d', 0);
+    fprintf(f_out, '%d', 999999);
     fprintf(f_out, '\n');
     fprintf(f_out, '%d', th+0.001);
     fprintf(f_out, '\n');
