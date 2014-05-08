@@ -1,0 +1,60 @@
+CASCADE LEVEL1
+399samples:99positives &300 negatives.
+WEAK CLASSIFIER NUMBER1
+Region:0.104250.469760.022838
+Alpha:2.1316
+Threshold:-0.013187
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+Region:0.838230.141060.10328
+Alpha:1.2279
+Threshold:-0.009215
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER3
+Region:0.290590.561340.18404
+Alpha:1.626
+Threshold:1.6138
+TPR:1
+FPR:0.40333
+Final stage threshold:1.6128
+Final stage F:0.40333
+Final stage D:1
+
+CASCADE LEVEL2
+220samples:99positives &121 negatives.
+WEAK CLASSIFIER NUMBER4
+Region:0.959650.0890840.032193
+Alpha:2.7408
+Threshold:-0.01858
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER5
+Region:0.331290.453250.24429
+Alpha:2.1603
+Threshold:2.1416
+TPR:1
+FPR:0.29752
+Final stage threshold:2.1406
+Final stage F:0.12
+Final stage D:1
+
+CASCADE LEVEL3
+135samples:99positives &36 negatives.
+WEAK CLASSIFIER NUMBER6
+Region:0.120230.572090.11414
+Alpha:3.0445
+Threshold:-0.016739
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER7
+Region:0.832050.753830.10444
+Alpha:4.538
+Threshold:3.0322
+TPR:1
+FPR:0
+Final stage threshold:3.0312
+Final stage F:0
+Final stage D:1
+

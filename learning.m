@@ -48,7 +48,7 @@ while (F > F_target)
     fprintf(file, '\n');
    
     total_samples = length(neg_info)+length(pos_info);
-    HOG = zeros(total_samples, fv);
+    
     
     %alpha = 0;
     fprintf(file, '%s', strcat(num2str(total_samples), blanks(1),'samples:',blanks(1), num2str(length(pos_info)), 'positives &', blanks(1), num2str(length(neg_info)), blanks(1),' negatives.'));
@@ -112,7 +112,6 @@ while (F > F_target)
                
         % EVALUATE POS&NEG with strong classifier --> TPR / FPR (svmclassify)
         disp('Evaluating strong classifier...');
-        th=0;
         alpha = 0;
         res = zeros(total_samples,1);
         f_read = fopen('classifiers/svm_classifier.txt', 'r');
@@ -123,8 +122,10 @@ while (F > F_target)
             reg(1,2) = str2double(fscanf(f_read,'%s', 1));
             reg(1,3) = str2double(fscanf(f_read,'%s', 1));
             samples = str2double(fscanf(f_read,'%s', 1));
-            if (res ==0) res = zeros (samples,1);
+            if (res == 0) 
+                res = zeros (samples,1);
             end
+            HOG = zeros(samples, fv);
             for m=1:samples
                 for n=1:fv
                     HOG(m,n) = str2double(fscanf(f_read, '%s', 1));
@@ -199,7 +200,7 @@ while (F > F_target)
             disp(FPR)
             th = th- 0.01;
         end
-        fprintf(file, '%s', strcat('Threshold: ',num2str(th+0.001)));
+        fprintf(file, '%s', strcat('Threshold: ',num2str(th+0.01)));
         fprintf(file, '\n');
         fprintf(file, '%s', strcat('TPR: ', num2str(TPR)));
         fprintf(file, '\n');
@@ -216,7 +217,7 @@ while (F > F_target)
     end
     fprintf(f_out, '%d', 999999);
     fprintf(f_out, '\n');
-    fprintf(f_out, '%d', th+0.001);
+    fprintf(f_out, '%d', th+0.01);
     fprintf(f_out, '\n');
     
 	F = F * f;

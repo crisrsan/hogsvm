@@ -34,8 +34,8 @@ copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_positives.tx
 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
 	i=1;
-	%f= fopen(strcat(path_positives, 'list.txt'), 'r');
-    f = fopen(strcat(path_positives, 'prova.txt'), 'r');
+	f= fopen(strcat(path_positives, 'list.txt'), 'r');
+    %f = fopen(strcat(path_positives, 'prova.txt'), 'r');
     
 	while (~feof(f)) %
         name = fscanf(f,'%s', 1);
@@ -63,8 +63,8 @@ copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_positives.tx
     
     w = 3; % Number of windows per negative image
     i=1;
-    %f = fopen(strcat(path_negatives, 'list.txt'), 'r');
-    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    f = fopen(strcat(path_negatives, 'list.txt'), 'r');
+    %f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
     
 	while(~feof(f))
         name = fscanf(f,'%s', 1);
