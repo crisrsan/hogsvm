@@ -44,7 +44,7 @@ region(1,1) = str2double(fscanf(f,'%s', 1));
         [status, hog] = system(myCommand);
         HOG = str2num(hog);      
   
-        weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; %!!!!!!! ojuuuuuu la T varia per cada SVM - només actual ?
+        weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; 
         weak_res
       
         res = res + weak_res;

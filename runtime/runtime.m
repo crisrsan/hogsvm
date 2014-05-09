@@ -1,7 +1,6 @@
 % CRISTINA RUIZ SANCHO
 % HOG + SVM
 
-
 function []= runtime (path_to_image, image_name)
 addpath('/nobackup/server/users/criru691/HOG+SVM');
 
@@ -12,16 +11,15 @@ minsize = 300; %minimum window size
 maxsize = im.Height; %maximum window size
 
 scale_factor=1.30;
+overlap_factor=1;
 s=minsize;
 % WINDOS = 64x128.
 % IMAGE SCANNING - window selection
 while(s <=maxsize)
+
+    overlap_h=8*overlap_factor;
+    overlap_v=8*overlap_factor;
     
-    % HACER LOS OVERLAPS EXACTOS!!!!!!!!!!!!!
-    %overlap_h=im.Width/(s*0.4);
-    overlap_h=50;
-    %overlap_v=im.Height/s;
-    overlap_v=50;
     for r=0:overlap_v:(im.Height-s)
     %for r=round(s/2):8:round(im.Height-(s/2))
         for c=0:overlap_h:(im.Width-(s*0.4))
