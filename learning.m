@@ -2,12 +2,12 @@
 % HOG + SVM
 
 t = cputime;
-% RESULTS TRACKING DOCUMENT %
-file = fopen ('training_results.txt','w');
-
 % RESULTANT CLASSIFIER %
 mkdir('classifiers');
 f_out = fopen('classifiers/svm_classifier.txt','w');
+
+% RESULTS TRACKING DOCUMENT %
+file = fopen ('classifiers/training_results.txt','w');
 
 % PARAMETERS DEFINITION %
 % Some of them could be asked as input arguments.
@@ -25,7 +25,7 @@ path_rid = '/nobackup/server/users/criru691/Dataset/INRIA/rid/';
 % DATASET INITIZALIZATION % 
 % Create the helper file namelist.txt, get information from all samples and
 % convert them to rid images for a successful feature extraction. 
-%[neg_info, pos_info]=prepare_samples (path_negatives, path_positives, path_rid);
+[neg_info, pos_info]=prepare_samples (path_negatives, path_positives, path_rid);
 
 % VARIABLES INITIALIZATION %
 i = 0;   % Number of stages/levels of the cascade 
@@ -65,7 +65,11 @@ while (F > F_target)
         disp(k)
         
         % COMPUTE linear SVM classifier %
+        train = cputime;
 		[weak_svm, weak_region, weak_alpha, W, T, G] = select_svm (neg_info, pos_info, path_rid, path_positives, path_negatives, W);
+        train = train - cputime;
+        fprintf(file, '%s', strcat('CPUTIME', blanks(1), num2str(train)));
+        fprintf(file, '\n')
         if (weak_region == 0) % Not convergence found
             k= k-1;
             continue

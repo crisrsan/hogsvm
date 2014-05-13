@@ -21,14 +21,14 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
         %row = str2double(pos_info(k).row);
         %col = str2double(pos_info(k).col);
         %size = str2double(pos_info(k).size);
-        
+       
         % Boundary box coordinates (pedestrian): row, col, size.
         row = pos_info(k).row;
         col = pos_info(k).col;
         size = pos_info(k).size;
 
         % Feature block coordinates: r, c, s.
-        r = (row-(size/2))+(region(1)*size*ped_ratio);
+        r = (row-(size/2))+(region(1)*size);
         c = (col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio));
         s = region(3)*(size*ped_ratio);
 

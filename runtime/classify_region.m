@@ -9,6 +9,7 @@ path_rid = '/nobackup/server/users/criru691/Dataset/INRIA/rid/';
 img2rid(image, path_to_image, path_rid); 
 region = zeros(1,3);
 fv=54;
+ped_ratio = 0.5;
 
 f = fopen('/nobackup/server/users/criru691/HOG+SVM/runtime/classifiers/svm_classifier.txt', 'r');
 ped = 0;
@@ -34,9 +35,9 @@ region(1,1) = str2double(fscanf(f,'%s', 1));
         %t = str2double(fscanf(f_read, '%s', 1));
         structSVM = load (SVM_name);
                  
-        r = (row-size*0.5)+(region(1)*size);
-        c = (col-size*0.2)+(region(2)*(size*0.4));
-        s = region(3)*(size);
+        r = (row-(size/2))+(region(1)*size);
+        c = (col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio));
+        s = region(3)*(size*ped_ratio);
             
         path_to_rid_image = strcat(path_rid, image,'.rid');
         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];

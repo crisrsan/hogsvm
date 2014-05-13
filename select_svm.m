@@ -55,19 +55,20 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
        
         
         % HOG EXTRACTION %
-        [T, G]=feature_extraction(region, pos_info,neg_info,path_rid, path_positives, path_negatives, 1);
-                           
+        [T, G]=feature_extraction(region, pos_info, neg_info,path_rid, path_positives, path_negatives, 0);
+           
+        
     	% TRAIN SVM (svmtrain) %
         disp('Training linear SVM..');
-        %options.MaxIter = 100;
+        options.MaxIter = 100000;
         try
-            %svm = svmtrain(T,G, 'Options', options);
-            svm = svmtrain(T,G);
+            svm = svmtrain(T,G, 'Options', options);
+            %svm = svmtrain(T,G);
         catch
             disp('ERROR: Not possible to find convergence.');
             continue
         end
-        
+        cputime
    		% ERROR CALCULATION (svmclassify) - AdaBoost algorithm %
 		res = svmclassify (svm, T);
         res

@@ -12,7 +12,7 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
     pos_dir = dir(path_positives);
     f_init = fopen(strcat(path_positives, 'namelist.txt'), 'w');
     for i=3:length(pos_dir)
-        if(~strcmp(pos_dir(i).name,'namelist.txt') && ~strcmp(pos_dir(i).name,'list.txt')) 
+        if(~strcmp(pos_dir(i).name,'namelist.txt') && ~strcmp(pos_dir(i).name,'list.txt') && ~strcmp(pos_dir(i).name,'prova.txt')) 
             fprintf(f_init, '%s', pos_dir(i).name);
             fprintf(f_init, '\n');
         end
@@ -22,18 +22,13 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
     neg_dir = dir(path_negatives);
     f_init = fopen(strcat(path_negatives, 'namelist.txt'), 'w');
     for i=3:length(neg_dir)
-        if(~strcmp(neg_dir(i).name,'namelist.txt') && ~strcmp(pos_dir(i).name,'list.txt')) 
+        if(~strcmp(neg_dir(i).name,'namelist.txt') && ~strcmp(neg_dir(i).name,'list.txt') && ~strcmp(neg_dir(i).name,'prova.txt') ) 
             fprintf(f_init, '%s', neg_dir(i).name);
             fprintf(f_init, '\n');
         end
     end
     fclose(f_init);
 
-
-    % Create a file (prova.txt) to test the program in a specific small set of
-    % images (prova_negatives.txt / prova_positives.txt)
-    %copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/prova.txt');
-    %copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_positives/prova.txt');
 
 
 
@@ -48,8 +43,13 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 % 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 % 
 % 	i=1;
-% 	f= fopen(strcat(path_positives, 'list.txt'), 'r');
-%     %f = fopen(strcat(path_positives, 'prova.txt'), 'r');
+% 	%f= fopen(strcat(path_positives, 'list.txt'), 'r');
+%     
+%       
+%     % Create a file (prova.txt) to test the program in a specific small set of
+%     % images (prova_positives.txt)
+%     copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_positives/prova.txt');
+%     f = fopen(strcat(path_positives, 'prova.txt'), 'r');
 %     
 % 	while (~feof(f)) %
 %         name = fscanf(f,'%s', 1);
@@ -77,10 +77,11 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
 	i=1;
-	f= fopen(strcat(path_positives, 'namelist.txt'), 'r');
-    %f = fopen(strcat(path_positives, 'prova.txt'), 'r');
+	%f= fopen(strcat(path_positives, 'namelist.txt'), 'r');
+  copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_crop_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_pos_crop/prova.txt');
+    f = fopen(strcat(path_positives, 'prova.txt'), 'r');
     
-	while (~feof(f)) %
+	while (~feof(f)) 
         name = fscanf(f,'%s', 1);
         if(~isempty(name))
             pos_info(i).filename = name;
@@ -107,10 +108,15 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
     
     w = 3; % Number of windows per negative image
     i=1;
-    f = fopen(strcat(path_negatives, 'list.txt'), 'r');
-    %f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    %f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
+       
     
-	while(~feof(f))
+    % Create a file (prova.txt) to test the program in a specific small set of
+    % images (prova_negatives.txt / prova_positives.txt)
+    copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/prova.txt');
+    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    
+	while (~feof(f))
         name = fscanf(f,'%s', 1);
         if(~isempty(name))
             for j =0:(w-1) % GENERATE 3 TRAINING WINDOWS PER IMAGE
