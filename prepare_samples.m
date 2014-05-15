@@ -77,9 +77,9 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 	pos_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
 
 	i=1;
-	%f= fopen(strcat(path_positives, 'namelist.txt'), 'r');
-  copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_crop_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_pos_crop/prova.txt');
-    f = fopen(strcat(path_positives, 'prova.txt'), 'r');
+	f= fopen(strcat(path_positives, 'namelist.txt'), 'r');
+    %copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_crop_positives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_pos_crop/prova.txt');
+    %f = fopen(strcat(path_positives, 'prova.txt'), 'r');
     
 	while (~feof(f)) 
         name = fscanf(f,'%s', 1);
@@ -108,13 +108,13 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
     
     w = 3; % Number of windows per negative image
     i=1;
-    %f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
+    f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
        
     
     % Create a file (prova.txt) to test the program in a specific small set of
     % images (prova_negatives.txt / prova_positives.txt)
-    copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/prova.txt');
-    f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    %copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/prova.txt');
+    %f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
     
 	while (~feof(f))
         name = fscanf(f,'%s', 1);

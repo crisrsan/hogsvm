@@ -7,7 +7,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
   
 
     % PARAMETERS DEFINITION %
-    fv = 54; % Number of D-feature vector HOG
+    fv = 36; % Number of D-feature vector HOG
     N = 5; % Number of trained SVMs to get a weak classifier 
     
     % VARIABLES INITIALIZATION %
@@ -60,7 +60,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
         
     	% TRAIN SVM (svmtrain) %
         disp('Training linear SVM..');
-        options.MaxIter = 100000;
+        options.MaxIter = inf;
         try
             svm = svmtrain(T,G, 'Options', options);
             %svm = svmtrain(T,G);

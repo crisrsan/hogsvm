@@ -5,7 +5,7 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
 %   Detailed explanation goes here
 
     % PARAMETERS DEFINITION %
-    fv = 54; % Number of D-feature vector HOG
+    fv = 36; % Number of D-feature vector HOG
     ped_ratio = 0.5; % Pedestrian aspect ratio: width = ped_ratio*height
     
     % VARIABLES INITIALIZATION %
@@ -16,6 +16,7 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
     region
     % --------------- POSITIVES--------------- %
     disp('Extracting HOG from positives...');
+
     for k=1:length(pos_info)
         % ORIGINAL IMAGES - conversion from string to double must be done: %
         %row = str2double(pos_info(k).row);
@@ -28,22 +29,28 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
         size = pos_info(k).size;
 
         % Feature block coordinates: r, c, s.
-        r = (row-(size/2))+(region(1)*size);
-        c = (col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio));
-        s = region(3)*(size*ped_ratio);
-
+        r = floor((row-(size/2))+(region(1)*size));
+        c = floor((col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio)));
+        s = floor(region(3)*(size*ped_ratio));
+        
+        image=strcat(path_positives, pos_info(k).filename);
         if(plot) 
-            imshow(strcat(path_positives, pos_info(k).filename));
+            imshow(image);
             rectangle('Position',[(col-(size*ped_ratio)/2), row-(size/2), size*ped_ratio, size], 'LineWidth', 2, 'EdgeColor', 'b');
             rectangle('Position', [(c-(s/2)), r-(s/2), s, s], 'LineWidth', 1, 'EdgeColor', 'r');
             pause()
         end
-
-        path_to_rid_image = strcat(path_rid, pos_info(k).filename,'.rid');
-        myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
-
-        [~ , res] = system(myCommand);
-        hog = str2num(res); 
+        
+        
+        img = imread(image);
+        I = img(floor(r-s/2):floor(r+s/2), floor(c-s/2):floor(c+s/2));
+        hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
+        
+%         path_to_rid_image = strcat(path_rid, pos_info(k).filename,'.rid');
+%         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
+%         [~ , res] = system(myCommand);
+%         hog = str2num(res); 
+          
         T (k,:) = hog;
         G (k,1) = 1;
     end
@@ -56,22 +63,29 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
         col = neg_info(k).col;
         size = neg_info(k).size;
         % Feature block coordinates: r, c, s.
-        r = (row-(size/2))+(region(1)*size);
-        c = (col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio));
-        s = region(3)*(size*ped_ratio);
-
+        r = floor((row-(size/2))+(region(1)*size));
+        c = floor((col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio)));
+        s = floor(region(3)*(size*ped_ratio));
+        
+        image=strcat(path_negatives, neg_info(k).filename);
         if(plot) 
-            imshow(strcat(path_negatives, neg_info(k).filename));
+            imshow(image);
             rectangle('Position',[(col-(size*ped_ratio)/2), row-(size/2), size*ped_ratio, size], 'LineWidth', 2, 'EdgeColor', 'b');
             rectangle('Position', [(c-(s/2)), r-s/2, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
             pause()
         end
-
-        path_to_rid_image = strcat(path_rid, neg_info(k).filename,'.rid');
-        myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
-
-        [~ , res] = system(myCommand);
-        hog = str2num(res); 
+        
+        img = imread(image);
+        I = img(round(r-s/2):round(r+s/2), round(c-s/2):round(c+s/2));
+              
+        
+        hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
+        
+%         path_to_rid_image = strcat(path_rid, neg_info(k).filename,'.rid');
+%         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
+%         [~ , res] = system(myCommand);
+%         hog = str2num(res);
+        
         T ((length(pos_info)+k),:) = hog;
         G ((length(pos_info)+k),1) = 0;
      end

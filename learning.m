@@ -15,7 +15,7 @@ F_target = 1e-6;    % FPR global target
 fmax = 0.7;         % FPR cascade level target
 dmin = 0.9975;      % TPR cascade level target
 th = 0;             % Classification Threshold - Is it different for every level?
-fv = 54;            % Feature vector HOG - definied according to goh_extractor parameters.
+fv = 36;            % Feature vector HOG - definied according to goh_extractor parameters.
 
 path_negatives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/';
 %path_positives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_positives/';
@@ -26,7 +26,8 @@ path_rid = '/nobackup/server/users/criru691/Dataset/INRIA/rid/';
 % Create the helper file namelist.txt, get information from all samples and
 % convert them to rid images for a successful feature extraction. 
 [neg_info, pos_info]=prepare_samples (path_negatives, path_positives, path_rid);
-
+aux_neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
+aux_neg_info= neg_info;
 % VARIABLES INITIALIZATION %
 i = 0;   % Number of stages/levels of the cascade 
 D = 1.0; % Final accuracy: TPR 
@@ -39,9 +40,9 @@ while (F > F_target)
    	f=1.0; % FPR cascade level initialization
 	total_samples = length(neg_info)+length(pos_info);
     
-    fprintf(file, '%s', strcat('CASCADE LEVEL', blanks(1), num2str(i)));
+    fprintf(file, '%s', strcat('CASCADE LEVEL', num2str(i)));
     fprintf(file, '\n');
-    fprintf(file, '%s', strcat(num2str(total_samples), blanks(1),'samples:',blanks(1), num2str(length(pos_info)), 'positives &', blanks(1), num2str(length(neg_info)), blanks(1),' negatives.'));
+    fprintf(file, '%s', strcat(num2str(total_samples),'samples:', num2str(length(pos_info)), 'positives &', num2str(length(neg_info)), ' negatives.'));
     fprintf(file, '\n');
     
     % VECTOR OF WEIGTHS INITIALIZATION %
@@ -59,7 +60,7 @@ while (F > F_target)
    	while (f > fmax)
         k=k+1;
        
-        fprintf(file, '%s', strcat('WEAK CLASSIFIER NUMBER', blanks(1), num2str(k)));
+        fprintf(file, '%s', strcat('WEAK CLASSIFIER NUMBER', num2str(k)));
         fprintf(file, '\n');
         disp('Building strong classifier... weak classifier number ');
         disp(k)
@@ -68,13 +69,13 @@ while (F > F_target)
         train = cputime;
 		[weak_svm, weak_region, weak_alpha, W, T, G] = select_svm (neg_info, pos_info, path_rid, path_positives, path_negatives, W);
         train = train - cputime;
-        fprintf(file, '%s', strcat('CPUTIME', blanks(1), num2str(train)));
+        fprintf(file, '%s', strcat('CPUTIME', num2str(train)));
         fprintf(file, '\n')
         if (weak_region == 0) % Not convergence found
             k= k-1;
             continue
         end
-        fprintf(file, '%s', strcat('Region: ', num2str(weak_region(1)), blanks(1), num2str(weak_region(2)), blanks(1), num2str(weak_region(3))));
+        fprintf(file, '%s', strcat('Region: ', num2str(weak_region(1)), num2str(weak_region(2)), num2str(weak_region(3))));
         fprintf(file, '\n');
         fprintf(file, '%s', strcat('Alpha: ', num2str(weak_alpha)));
         fprintf(file, '\n');
@@ -118,6 +119,8 @@ while (F > F_target)
                 res = zeros (samples,1);
             end
             HOG = zeros(samples, fv);
+          
+            % HIGH COMPUTATIONAL - IN RUNTIME!!!!!!!!
             for m=1:samples
                 for n=1:fv
                     HOG(m,n) = str2double(fscanf(f_read, '%s', 1));
@@ -127,9 +130,9 @@ while (F > F_target)
             a = str2double(fscanf(f_read, '%s', 1));
             
             structSVM = load (SVM_name);
-            % HIGH COMPUTATIONAL !!!!!!!!
+            
             %[HOG, G]=feature_extraction(reg, pos_info, neg_info, path_rid, path_positives, path_negatives, 0);
-            % Therefore, we use the same TRAINING samples and previous extracted HOG features %
+            
             weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; 
             res = res + weak_res;
             alpha = alpha + a;           
