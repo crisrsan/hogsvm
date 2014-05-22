@@ -1,15 +1,12 @@
 
-function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, pos_info, path_rid, path_positives, path_negatives, W_in)
+function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg_info, pos_info, path_positives, path_negatives, W_in)
 %select_svm Selects the SVM/classifer from a set of N SVMs/classifiers that best (low error) 
 %separates the binary dataset (neg_info and pos_info).
 %   [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(NEG_INFO,
 %   POS_INFO, PATH_TO_RID, PATH_TO_POSITIVES, PATH_TO_NEGATIVES, WEIGTHS)
   
 
-    % PARAMETERS DEFINITION %
-    fv = 36; % Number of D-feature vector HOG
-    N = 5; % Number of trained SVMs to get a weak classifier 
-    
+    ped_ratio = 0.5;
     % VARIABLES INITIALIZATION %
     error=inf;
     total_samples = length(neg_info)+length(pos_info);
@@ -33,9 +30,11 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
         b = 1;
         region(1,3) = a + (b-a)*rand;
         
+        min = region(1,3)/2*ped_ratio;
+        max = 1-(region(1,3)/2*ped_ratio);
+        region(1,1) = min + (max-min)*rand; %ROW
         min = region(1,3)/2;
         max = 1-(region(1,3)/2);
-        region(1,1) = min + (max-min)*rand; %ROW
         region(1,2) = min + (max-min)*rand; %COLUMN
         
         % Define max region size to fit into the image/window boundaries.
@@ -55,7 +54,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(neg_info, 
        
         
         % HOG EXTRACTION %
-        [T, G]=feature_extraction(region, pos_info, neg_info,path_rid, path_positives, path_negatives, 0);
+        [T, G]=feature_extraction(fv, region, pos_info, neg_info, path_positives, path_negatives, 0);
            
         
     	% TRAIN SVM (svmtrain) %

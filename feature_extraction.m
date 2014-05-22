@@ -1,11 +1,10 @@
 
-function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_positives, path_negatives, plot)
+function [T, G] = feature_extraction(fv, region, pos_info, neg_info, path_positives, path_negatives, plot)
 %feature_extraction Extracts HOG from the predifined region in all dataset
 %samples and create the vector of sample annotations.
 %   Detailed explanation goes here
 
     % PARAMETERS DEFINITION %
-    fv = 36; % Number of D-feature vector HOG
     ped_ratio = 0.5; % Pedestrian aspect ratio: width = ped_ratio*height
     
     % VARIABLES INITIALIZATION %
@@ -29,21 +28,21 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
         size = pos_info(k).size;
 
         % Feature block coordinates: r, c, s.
-        r = floor((row-(size/2))+(region(1)*size));
-        c = floor((col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio)));
-        s = floor(region(3)*(size*ped_ratio));
+        r = round(row-(size/2))+round(region(1)*size);
+        c = round(col-(size*ped_ratio/2))+round(region(2)*(size*ped_ratio));
+        s = round(region(3)*(size*ped_ratio));
         
         image=strcat(path_positives, pos_info(k).filename);
         if(plot) 
             imshow(image);
             rectangle('Position',[(col-(size*ped_ratio)/2), row-(size/2), size*ped_ratio, size], 'LineWidth', 2, 'EdgeColor', 'b');
-            rectangle('Position', [(c-(s/2)), r-(s/2), s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            rectangle('Position', [(c-(s/2)+1), r-(s/2)+1, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
             pause()
         end
         
         
         img = imread(image);
-        I = img(floor(r-s/2):floor(r+s/2), floor(c-s/2):floor(c+s/2));
+        I = img(round(r-s/2+1):round(r+s/2), round(c-s/2+1):round(c+s/2));
         hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
         
 %         path_to_rid_image = strcat(path_rid, pos_info(k).filename,'.rid');
@@ -62,10 +61,12 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
         row = neg_info(k).row;
         col = neg_info(k).col;
         size = neg_info(k).size;
+       
         % Feature block coordinates: r, c, s.
-        r = floor((row-(size/2))+(region(1)*size));
-        c = floor((col-(size*ped_ratio/2))+(region(2)*(size*ped_ratio)));
-        s = floor(region(3)*(size*ped_ratio));
+        r = round(row-(size/2))+round(region(1)*size);
+        c = round(col-(size*ped_ratio/2))+round(region(2)*(size*ped_ratio));
+        s = round(region(3)*(size*ped_ratio));
+        
         
         image=strcat(path_negatives, neg_info(k).filename);
         if(plot) 
@@ -76,8 +77,8 @@ function [T, G] = feature_extraction(region, pos_info, neg_info, path_rid, path_
         end
         
         img = imread(image);
-        I = img(round(r-s/2):round(r+s/2), round(c-s/2):round(c+s/2));
-              
+     
+        I = img(round(r-s/2+1):round(r+s/2), round(c-s/2+1):round(c+s/2));
         
         hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
         

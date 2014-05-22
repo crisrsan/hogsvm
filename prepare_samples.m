@@ -1,13 +1,12 @@
 
-function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives, path_rid)
+function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives, w)
 %prepare_samples Prepare POSITIVE and NEGATIVE samples for the "learning" execution.
-%   [neg_info, pos_info] = prepare_samples (PATH_TO_NEGATIVES,
-%   PATH_TO_POSITIVES, PATH_TO_RID) extracts information from the dataset needed for the "learning" stage. 
+%   [neg_info, pos_info] = prepare_samples (PATH_TO_NEGATIVES, PATH_TO_POSITIVES) extracts information 
+%   from the dataset needed for the "learning" stage. 
 %   PATH_TO NEGATIVES is the complete path to the negatives folder, 
-%   PATH_TO_POSITIVES is the complete path to the positives folder, 
-%   PATH_TO_RID is the complete path to the desired RID images location. 
-	
-    
+%   PATH_TO_POSITIVES is the complete path to the positives folder.
+
+	   
     % Create a file (namelist.txt) with the complete list of names from the available negatives/positives image set.
     pos_dir = dir(path_positives);
     f_init = fopen(strcat(path_positives, 'namelist.txt'), 'w');
@@ -28,7 +27,6 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
         end
     end
     fclose(f_init);
-
 
 
 
@@ -93,20 +91,18 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
             pos_info(i).size = 128;
 	
             %CONVERT POSITIVES TO .rid
-            img2rid(pos_info(i).filename, im.Filename, path_rid);
+            %img2rid(pos_info(i).filename, im.Filename, path_rid);
             i=i+1;
         end
 	end
 	fclose(f);   
-
-
 
     % --------------- NEGATIVES --------------- %
     disp('Preparing negative samples (background images) from ');
     disp(path_negatives);
    	neg_info = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {});
     
-    w = 3; % Number of windows per negative image
+    
     i=1;
     f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
        
@@ -119,7 +115,7 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 	while (~feof(f))
         name = fscanf(f,'%s', 1);
         if(~isempty(name))
-            for j =0:(w-1) % GENERATE 3 TRAINING WINDOWS PER IMAGE
+            for j =0:(w-1) % GENERATE w TRAINING WINDOWS PER IMAGE
                 
                 neg_info(i+j).filename = name;
                 im=imfinfo(strcat(path_negatives, neg_info(i+j).filename)); %Filename, Width, Heigth
@@ -131,7 +127,7 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
            
             end
 		%CONVERT NEGATIVES TO .rid
-		img2rid(neg_info(i).filename, im.Filename, path_rid);
+		%img2rid(neg_info(i).filename, im.Filename, path_rid);
         i = i+w;
         end
     end
