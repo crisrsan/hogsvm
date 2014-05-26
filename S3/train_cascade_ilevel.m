@@ -9,7 +9,7 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
 	k = 0; %Number of weak_classifers
 	f = 1.0; % FPR cascade level initialization
 	total_samples = length(neg_info)+length(pos_info); % Total number of samples used in the training level
-    reg = zeros(1,3);
+    reg = zeros(1,4);
 	   
     W = zeros(total_samples, 1); %Weight vector: samples adaboost weigths
     for j=1:length(pos_info)
@@ -40,7 +40,7 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
             k= k-1;
             continue
         end
-        fprintf(f_track, '%s', strcat('Region: ', num2str(weak_region(1)), num2str(weak_region(2)), num2str(weak_region(3))));
+        fprintf(f_track, '%s', strcat('Region: ', num2str(weak_region(1)), num2str(weak_region(2)), num2str(weak_region(3)), num2str(weak_region(4))));
         fprintf(f_track, '\n');
         fprintf(f_track, '%s', strcat('Alpha: ', num2str(weak_alpha)));
         fprintf(f_track, '\n');
@@ -56,6 +56,8 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
         fprintf(f_class, ' ');
         fprintf(f_class, '%d', weak_region(3));
         fprintf(f_class, ' ');
+         fprintf(f_class, '%d', weak_region(4));
+        fprintf(f_class, ' ');
         %fprintf(f_class, '%d', total_samples);
         %fprintf(f_class, ' ');
         fprintf(f_class, '%s', matfile);
@@ -69,6 +71,8 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
         fprintf(f_write, '%d', weak_region(2));
         fprintf(f_write, ' ');
         fprintf(f_write, '%d', weak_region(3));
+        fprintf(f_write, ' ');
+        fprintf(f_write, '%d', weak_region(4));
         fprintf(f_write, ' ');
         %fprintf(f_write, '%d', total_samples);
         %fprintf(f_write, ' ');
@@ -93,6 +97,7 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
 			reg(1,1) = str2double(fscanf(f_read,'%s', 1));
             reg(1,2) = str2double(fscanf(f_read,'%s', 1));
             reg(1,3) = str2double(fscanf(f_read,'%s', 1));
+            reg(1,4) = str2double(fscanf(f_read,'%s', 1));
             %samples = str2double(fscanf(f_read,'%s', 1));
             %if (res == 0) 
                 %res = zeros (samples,1);

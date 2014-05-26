@@ -4,12 +4,13 @@
 t = cputime;
 % TRAINING PARAMETERS DEFINITION %
 % Some of them could be asked as input arguments.
-%F_target = 1e-6;    % FPR global target
+F_target = 1e-6;    % FPR global target
 fmax = 0.7;         % FPR cascade level target
 dmin = 0.9975;      % TPR cascade level target
 fv = 36;            % Feature vector HOG - defined according to goh_extractor parameters.
-neg_w = 10;          % Number of windows per negative image
-N = 25;				% Number of training blocks/svm per weak classifier selection.
+neg_w = 10;         % Number of windows per negative image
+N = 5;			% Number of training blocks/svm per weak classifier selection.
+
 
 path_negatives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/';
 path_positives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_pos_crop/';
@@ -24,7 +25,7 @@ f_track = fopen ('classifiers/training_results.txt','w');
 
 % DATASET INITIZALIZATION % 
 % Create the helper file namelist.txt, get information from all samples required in feature extraction.
-[neg_info, pos_info]=prepare_samples (path_negatives, path_positives, neg_w);
+%[neg_info, pos_info]=prepare_samples (path_negatives, path_positives, neg_w);
 
 % VARIABLES INITIALIZATION %
 i = 0;   % Number of stages/levels of the cascade 
