@@ -23,6 +23,7 @@ function [neg_info] = sample_negatives(path_negatives, w)
             for j =0:(w-1) % GENERATE w TRAINING WINDOWS PER IMAGE
                  
                 neg_info(i+j).filename = strcat(path_negatives, name);
+                neg_info(i+j).filename
                 im=imfinfo(neg_info(i+j).filename); %Filename, Width, Heigth
                 neg_info(i+j).width = im.Width;
                 neg_info(i+j).height=im.Height;                
@@ -30,14 +31,21 @@ function [neg_info] = sample_negatives(path_negatives, w)
                 neg_info(i+j).col = round(36 + ((im.Width-36)-36)*rand);
                 neg_info(i+j).size = 128;
                 img = imread(neg_info(i+j).filename); 
-                while(~classify_region(neg_info(i+j).row, neg_info(i+j).col, neg_info(i+j).size, img))
+                count=0;
+                while((~classify_region(neg_info(i+j).row, neg_info(i+j).col, neg_info(i+j).size, img)))
                      disp('Good classification!');
                      neg_info(i+j).row = round(68 + ((im.Height-68)-68)*rand);
                      neg_info(i+j).col = round(36 + ((im.Width-36)-36)*rand);
+                     neg_info(i+j).filename
+                     count = count+1;
+                     if(count>500)
+                        break;
+                     end
                 end
              end
 		%CONVERT NEGATIVES TO .rid
 		%img2rid(neg_info(i).filename, im.Filename, path_rid);
+        
         i = i+w;
         end
     end
