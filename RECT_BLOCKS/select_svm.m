@@ -23,49 +23,46 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
     height = 128;
     width = height*ped_ratio;  
     
+    block_ratio =  [1, 0.5, 2];
+    
 	for i=1:N
         
         % GENERATE NORMALIZED REGION - BLOCK RANDOMLY % 
         % The size of the blocks is picked randomly among a fixed set 
         % (from 12x12 to 64x64)... and then generate random position,
         % row and column according to image boundaries. 
-        region = zeros(1,3); 
-        a = 12;
-        b = width;
+        region = zeros(1,4); 
+        region(1,4) = block_ratio(round(1 + (3-1)*rand)); % Select block aspect ratio
         
+        switch (region(1,4))
+            case 1
+                a = 12;
+                b = width; %64
+            case 0.5
+                a = 12;
+                b = height; %128
+            case 2
+                a = 12;
+                b = width/2; %32
+            otherwise
+        end
+     
         region(1,3) = round(a + (b-a)*rand);
-                    
-        %COL
-        min = round(region(1,3)/2);
-        max = round(width - (region(1,3)/2));
+        
+         %COL
+        min = region(1,3)*region(1,4)/2;
+        max = width - (region(1,3)*region(1,4)/2);
         region(1,2) = round(min + (max-min)*rand);
         %ROW
-        min = round(region(1,3)/2);
-        max = round(height - (region(1,3)/2));
+        min = region(1,3)/2;
+        max = height - (region(1,3)/2);
         region(1,1) = round(min + (max-min)*rand);
         
-        region(1,3) = region(1,3)/b;
+        region(1,3) = region(1,3)/(height);
         region(1,1) = region(1,1)/(height);
         region(1,2) = region(1,2)/(width);
         
-        
-        
-        
-        % Define max region size to fit into the image/window boundaries.
-        % STILL NOT CORRECT!!
-%        
-%         if ((region(1)<0.5) && (region(2) <0.5)) %2nd quadrant
-%             b= min(region(1),region(2));
-%         elseif ((region(1)<0.5) && (region(2)>0.5)) %1st quadrant
-%             b = min(region(1),(1-region(2)));
-%         elseif ((region(1)>0.5) && (region(2)<0.5)) % 3th quadrant
-%             b = min((1-region(1)),region(2));
-%         else %4th quadrant
-%             b = min((1-region(1)),(1-region(2)));
-%         end
-%         a = 0;
-%         region(1,3) = a + (b-a)*rand; %SIZE 
-       
+  
         
         % HOG EXTRACTION %
         [T, G]=feature_extraction(fv, region, pos_info, neg_info, path_positives, path_negatives, 0);

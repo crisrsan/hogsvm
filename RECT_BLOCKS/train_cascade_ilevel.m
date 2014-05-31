@@ -56,6 +56,8 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
         fprintf(f_class, ' ');
         fprintf(f_class, '%d', weak_region(3));
         fprintf(f_class, ' ');
+         fprintf(f_class, '%d', weak_region(4));
+        fprintf(f_class, ' ');
         %fprintf(f_class, '%d', total_samples);
         %fprintf(f_class, ' ');
         fprintf(f_class, '%s', matfile);
@@ -69,6 +71,8 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
         fprintf(f_write, '%d', weak_region(2));
         fprintf(f_write, ' ');
         fprintf(f_write, '%d', weak_region(3));
+        fprintf(f_write, ' ');
+        fprintf(f_write, '%d', weak_region(4));
         fprintf(f_write, ' ');
         %fprintf(f_write, '%d', total_samples);
         %fprintf(f_write, ' ');
@@ -93,6 +97,7 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
 			reg(1,1) = str2double(fscanf(f_read,'%s', 1));
             reg(1,2) = str2double(fscanf(f_read,'%s', 1));
             reg(1,3) = str2double(fscanf(f_read,'%s', 1));
+            reg(1,4) = str2double(fscanf(f_read,'%s', 1));
             %samples = str2double(fscanf(f_read,'%s', 1));
             %if (res == 0) 
                 %res = zeros (samples,1);
@@ -138,10 +143,10 @@ function [FPR, TPR, f_class, f_track] = train_cascade_ilevel (i, f_class, f_trac
                 elseif (G(j,1) == 0 && count(j,1) == 1) fp = fp+1;
                 else tn = tn+1;
                 end
-            end
             
-            TPR = tp / (tp+fn);
-            FPR = fp / (fp+tn);
+            end
+                TPR = tp / (tp+fn);
+                FPR = fp / (fp+tn);
             disp('True positive rate - false positive rate...');
             disp(TPR);
             disp(FPR);

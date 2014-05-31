@@ -25,8 +25,10 @@ function [neg_info_out] = sample_negatives(neg_info_in)
             neg_info_out(i).pixels = neg_info_in(j).pixels;
             count = 0;
             while((~classify_region(neg_info_out(i).row, neg_info_out(i).col, neg_info_out(i).size, neg_info_out(i).pixels)))
+                disp('Good classification!');
                 neg_info_out(i).row = round(68 + ((neg_info_out(i).height-68)-68)*rand);
                 neg_info_out(i).col = round(36 + ((neg_info_out(i).width-36)-36)*rand);
+                neg_info_out(i).filename
                 count = count+1;
                 if(count>50)
                     i=i-1;
