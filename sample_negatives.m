@@ -8,6 +8,7 @@ function [neg_info_out] = sample_negatives(neg_info_in)
 %	W is the generated number of negative samples per background image.
     
 	
+%NUMBER OF NEGATIVES = NUMBER OF POSITIVES
     disp('Preparing new negative samples (background images) ...');
   
    	neg_info_out = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {}, 'pixels', {});
@@ -41,4 +42,25 @@ function [neg_info_out] = sample_negatives(neg_info_in)
         iter = iter+1;
     end
             
+% %NO REGENERATE NEGATIVES
+%     disp('Preparing new negative samples (background images) ...');
+%   
+%    	neg_info_out = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {}, 'pixels', {});
+%     
+%     i=1;
+%     for j=1:length(neg_info_in)
+%            
+%             ped = classify_region(neg_info_in(j).row, neg_info_in(j).col, neg_info_in(j).size, neg_info_in(j).pixels);
+%             if(ped)
+%                 neg_info_out(i).filename = neg_info_in(j).filename;
+%                 neg_info_out(i).width = neg_info_in(j).width;
+%                 neg_info_out(i).height = neg_info_in(j).height;
+%                 neg_info_out(i).row = neg_info_in(j).row;
+%                 neg_info_out(i).col = neg_info_in(j).col;
+%                 neg_info_out(i).size = neg_info_in(j).size;
+%                 neg_info_out(i).pixels = neg_info_in(j).pixels;
+%                 i = i+1;
+%             end
+%     end
+
 end

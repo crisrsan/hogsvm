@@ -108,6 +108,8 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
     % images (prova_negatives.txt / prova_positives.txt)
     %copyfile('/nobackup/server/users/criru691/Dataset/INRIA/train/prova_negatives.txt','/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/prova.txt');
     %f = fopen(strcat(path_negatives, 'prova.txt'), 'r');
+    
+    %NUMBER OF NEGATIVES = NUMBER OF POSITIVES
     while (length(neg_info) < length(pos_info))
         
         f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
@@ -136,4 +138,34 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
         i=i-1;
     end
         
+    
+%     %NUMBER OF NEGATIVES = neg_w
+%     f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
+%     while (~feof(f))
+%         name = fscanf(f,'%s', 1);
+%         if(~isempty(name))
+%             for j =0:(w-1) % GENERATE w TRAINING WINDOWS PER IMAGE
+%                 
+%                 neg_info(i+j).filename = strcat(path_negatives, name);
+%                 im=imfinfo(neg_info(i+j).filename); %Filename, Width, Heigth
+%                 neg_info(i+j).width = im.Width;
+%                 neg_info(i+j).height=im.Height;                
+%                 %neg_info(i+j).row = round(64 + ((im.Height-64)-64)*rand);
+%                 %neg_info(i+j).col = round(32 + ((im.Width-32)-32)*rand);
+%                 %ENS CUREM EN SALUT
+%                 neg_info(i+j).row = round(68 + ((im.Height-68)-68)*rand);
+%                 neg_info(i+j).col = round(36 + ((im.Width-36)-36)*rand);
+%                 neg_info(i+j).size = 128;
+%                 neg_info(i+j).pixels = imread(neg_info(i).filename); 
+%                                               
+%             end
+%             i = i+w;
+%         end
+%     end
+%     fclose(f);
+    
+    
+       
+    
+    
 end

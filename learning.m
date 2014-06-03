@@ -6,10 +6,12 @@ t = cputime;
 % Some of them could be asked as input arguments.
 F_target = 1e-6;    % FPR global target
 fmax = 0.7;         % FPR cascade level target
-dmin = 0.9975;      % TPR cascade level target
+dmin = 0.99;      % TPR cascade level target
 fv = 36;            % Feature vector HOG - defined according to goh_extractor parameters.
-neg_w = 2;          % Number of windows per negative image
+neg_w = 3;          % Number of windows per negative image
 N = 5;				% Number of training blocks/svm per weak classifier selection.
+
+
 
 path_negatives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/';
 path_positives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_pos_crop/';

@@ -1,5 +1,5 @@
 
-function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg_info, pos_info, path_positives, path_negatives, W_in)
+function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(fv, N, neg_info, pos_info, path_positives, path_negatives, W_in)
 %select_svm Selects the SVM/classifer from a set of N SVMs/classifiers that best (low error) 
 %separates the binary dataset (neg_info and pos_info).
 %   [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(NEG_INFO,
@@ -12,6 +12,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
     W_out = zeros(total_samples, 1);
     T_out = zeros(total_samples, fv); %Training matrix: samples features
     G_out = zeros(total_samples, 1); %Group vector: samples annotation
+    res_out = zeros(total_samples, 1);
     e = zeros(total_samples, 1);
     feature = zeros(1,3);
     
@@ -73,7 +74,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
         
     	% TRAIN SVM (svmtrain) %
         disp('Training linear SVM..');
-        options.MaxIter = inf;
+        options.MaxIter = 100000;
         try
             svm = svmtrain(T,G, 'Options', options);
             %svm = svmtrain(T,G);
@@ -81,7 +82,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
             disp('ERROR: Not possible to find convergence.');
             continue
         end
-        cputime
+        
    		% ERROR CALCULATION (svmclassify) - AdaBoost algorithm %
 		res = svmclassify (svm, T);
         tmp_error=0;
@@ -92,6 +93,12 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
         end
         tmp_error
         error
+        
+        if (tmp_error >= 0.5)
+            i=i-1;
+            continue
+        end
+        
 		% BEST SVM SELECTION - Comparison with previous SVMs/store results %
 		if (tmp_error <= error) 
             error = tmp_error;
@@ -100,6 +107,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
             feature = region;
             T_out=T;
             G_out=G;
+            res_out=res;
         end
         if(error == 0)
             break;
@@ -116,6 +124,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
             T_out = 0;
             G_out = 0;
             W_out = W_in;
+            res_out=0;
         case 0 % Ideal classification - special case.
             beta = 0;
             alpha = 1;
@@ -127,5 +136,7 @@ function [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(fv, N, neg
                 W_out(i,1) = W_in(i,1) * (beta^(1-e(i,1)));
             end
     end
-       
+    error
+    beta
+    alpha
 end
