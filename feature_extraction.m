@@ -1,5 +1,5 @@
 
-function [T, G] = feature_extraction(fv, region, pos_info, neg_info, path_positives, path_negatives, plot)
+function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
 %feature_extraction Extracts HOG from the predifined region in all dataset
 %samples and create the vector of sample annotations.
 %   Detailed explanation goes here
@@ -28,18 +28,18 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, path_positi
         size = pos_info(k).size;
 
         % Feature block coordinates: r, c, s.
-        r = round(row-(size/2))+round(region(1,1)*size);
-        c = round(col-(size*ped_ratio/2))+round(region(1,2)*(size*ped_ratio));
-        s = round(region(1,3)*(size*ped_ratio));
-        
-                                          
+        r = (row-1)+region(1,1);
+        c = (col-1)+region(1,2);
+        s = region(1,3);
         img = pos_info(k).pixels;
-        I = img(round(r-round(s/2)+1):round(r+floor(s/2)), round(c-round(s/2)+1):round(c+floor(s/2)));
+        I = img(r:(r+s-1), c:round(c+s-1));
         
         if(plot) 
             imshow(img);
-            rectangle('Position',[(col-(size*ped_ratio)/2), row-(size/2), size*ped_ratio, size], 'LineWidth', 2, 'EdgeColor', 'b');
-            rectangle('Position', [(c-round(s/2)+1), r-round(s/2)+1, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            rectangle('Position',[col, row, size*ped_ratio, size], 'LineWidth', 1, 'EdgeColor', 'b');
+            rectangle('Position', [c, r, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            pause()
+            imshow(I)
             pause()
         end
         
@@ -59,25 +59,24 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, path_positi
     % --------------- NEGATIVES --------------- %
     disp('Extracting HOG from negatives...');
     for k=1:length(neg_info) 
-        % Boundary box coordinates (negative region): row, col, size.
+        % Boundary box coordinates (pedestrian): row, col, size.
         row = neg_info(k).row;
         col = neg_info(k).col;
         size = neg_info(k).size;
-       
-       
+
         % Feature block coordinates: r, c, s.
-        r = round(row-(size/2))+round(region(1,1)*size);
-        c = round(col-(size*ped_ratio/2))+round(region(1,2)*(size*ped_ratio));
-        s = round(region(1,3)*(size*ped_ratio));
-        
-                                          
+        r = (row-1)+region(1,1);
+        c = (col-1)+region(1,2);
+        s = region(1,3);
         img = neg_info(k).pixels;
-        I = img(round(r-round(s/2)+1):round(r+floor(s/2)), round(c-round(s/2)+1):round(c+floor(s/2)));
+        I = img(r:(r+s-1), c:round(c+s-1));
         
         if(plot) 
             imshow(img);
-            rectangle('Position',[(col-(size*ped_ratio)/2), row-(size/2), size*ped_ratio, size], 'LineWidth', 2, 'EdgeColor', 'b');
-            rectangle('Position', [(c-round(s/2)+1), r-round(s/2)+1, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            rectangle('Position',[col, row, size*ped_ratio, size], 'LineWidth', 1, 'EdgeColor', 'b');
+            rectangle('Position', [c, r, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            pause()
+            imshow(I)
             pause()
         end
         

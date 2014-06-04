@@ -86,8 +86,10 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
             im=imfinfo(pos_info(i).filename);
             pos_info(i).width = im.Width;
             pos_info(i).height = im.Height;
-            pos_info(i).row = im.Height/2;
-            pos_info(i).col = im.Width/2;
+            %pos_info(i).row = im.Height/2;
+            %pos_info(i).col = im.Width/2;
+            pos_info(i).row=17;
+            pos_info(i).col=17;
             pos_info(i).size = 128;
             pos_info(i).pixels = imread(pos_info(i).filename); 
             %CONVERT POSITIVES TO .rid
@@ -123,8 +125,10 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
                 %neg_info(i+j).row = round(64 + ((im.Height-64)-64)*rand);
                 %neg_info(i+j).col = round(32 + ((im.Width-32)-32)*rand);
                 %ENS CUREM EN SALUT
-                neg_info(i).row = round(68 + ((im.Height-68)-68)*rand);
-                neg_info(i).col = round(36 + ((im.Width-36)-36)*rand);
+                row_pos=1:(im.Height-128+1);
+                col_pos=1:(im.Width-64+1);
+                neg_info(i).row = randsample(row_pos,1);
+                neg_info(i).col = randsample(col_pos,1);
                 neg_info(i).size = 128;
                 neg_info(i).pixels = imread(neg_info(i).filename); 
             end

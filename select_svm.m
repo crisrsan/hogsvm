@@ -1,5 +1,5 @@
 
-function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(fv, N, neg_info, pos_info, path_positives, path_negatives, W_in)
+function [svm_weak, feature, alpha, W_out, res_out, G_out] = select_svm(fv, N, neg_info, pos_info, path_positives, path_negatives, W_in)
 %select_svm Selects the SVM/classifer from a set of N SVMs/classifiers that best (low error) 
 %separates the binary dataset (neg_info and pos_info).
 %   [svm_weak, feature, alpha, W_out, T_out, G_out] = select_svm(NEG_INFO,
@@ -10,7 +10,7 @@ function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(f
     error=inf;
     total_samples = length(neg_info)+length(pos_info);
     W_out = zeros(total_samples, 1);
-    T_out = zeros(total_samples, fv); %Training matrix: samples features
+    %T_out = zeros(total_samples, fv); %Training matrix: samples features
     G_out = zeros(total_samples, 1); %Group vector: samples annotation
     res_out = zeros(total_samples, 1);
     e = zeros(total_samples, 1);
@@ -21,8 +21,9 @@ function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(f
     
     % REGION GENERATION PARAMETERS%
     ped_ratio = 0.5;
-    height = 128;
-    width = height*ped_ratio;  
+    block_size = 12:2:64;
+    h = 128;
+    w = h*ped_ratio;  
     
 	for i=1:N
         
@@ -30,46 +31,40 @@ function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(f
         % The size of the blocks is picked randomly among a fixed set 
         % (from 12x12 to 64x64)... and then generate random position,
         % row and column according to image boundaries. 
-        region = zeros(1,3); 
-        a = 12;
-        b = width;
         
-        region(1,3) = round(a + (b-a)*rand);
+        region = zeros(1,3);
+        region(1,3)=randsample(block_size,1);
+        row_pos=1:(h-region(1,3)+1);
+        region(1,1)=randsample(row_pos,1);
+        col_pos=1:(w-region(1,3)+1);
+        region(1,2)=randsample(col_pos,1);
+        
+     
+        
+%         region = zeros(1,3); 
+%         a = 12;
+%         b = width;
+%         
+%         region(1,3) = round(a + (b-a)*rand);
+%                     
+%         %COL
+%         min = round(region(1,3)/2);
+%         max = round(width - (region(1,3)/2));
+%         region(1,2) = round(min + (max-min)*rand);
+%         %ROW
+%         min = round(region(1,3)/2);
+%         max = round(height - (region(1,3)/2));
+%         region(1,1) = round(min + (max-min)*rand);
+%         
+%         region(1,3) = region(1,3)/b;
+%         region(1,1) = region(1,1)/(height);
+%         region(1,2) = region(1,2)/(width);
+%         
+%         
                     
-        %COL
-        min = round(region(1,3)/2);
-        max = round(width - (region(1,3)/2));
-        region(1,2) = round(min + (max-min)*rand);
-        %ROW
-        min = round(region(1,3)/2);
-        max = round(height - (region(1,3)/2));
-        region(1,1) = round(min + (max-min)*rand);
-        
-        region(1,3) = region(1,3)/b;
-        region(1,1) = region(1,1)/(height);
-        region(1,2) = region(1,2)/(width);
-        
-        
-        
-        
-        % Define max region size to fit into the image/window boundaries.
-        % STILL NOT CORRECT!!
-%        
-%         if ((region(1)<0.5) && (region(2) <0.5)) %2nd quadrant
-%             b= min(region(1),region(2));
-%         elseif ((region(1)<0.5) && (region(2)>0.5)) %1st quadrant
-%             b = min(region(1),(1-region(2)));
-%         elseif ((region(1)>0.5) && (region(2)<0.5)) % 3th quadrant
-%             b = min((1-region(1)),region(2));
-%         else %4th quadrant
-%             b = min((1-region(1)),(1-region(2)));
-%         end
-%         a = 0;
-%         region(1,3) = a + (b-a)*rand; %SIZE 
-       
         
         % HOG EXTRACTION %
-        [T, G]=feature_extraction(fv, region, pos_info, neg_info, path_positives, path_negatives, 0);
+        [T, G]=feature_extraction(fv, region, pos_info, neg_info, 0);
            
         
     	% TRAIN SVM (svmtrain) %
@@ -95,17 +90,18 @@ function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(f
         error
         
         if (tmp_error >= 0.5)
-            i=i-1;
             continue
         end
         
 		% BEST SVM SELECTION - Comparison with previous SVMs/store results %
-		if (tmp_error <= error) 
+        if (tmp_error <= error) 
             error = tmp_error;
             e = tmp_e;
             svm_weak = svm; 
-            feature = region;
-            T_out=T;
+            % RETURN NORMALIZED REGION    
+            feature(1,1) = region(1,1)/h;
+            feature(1,2) = region(1,2)/w;
+            feature(1,3) = region(1,3)/w;
             G_out=G;
             res_out=res;
         end
@@ -121,7 +117,7 @@ function [svm_weak, feature, alpha, W_out, res_out, T_out, G_out] = select_svm(f
             feature = 0;
             svm_weak = 0;
             alpha = 0;
-            T_out = 0;
+       
             G_out = 0;
             W_out = W_in;
             res_out=0;

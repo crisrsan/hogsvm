@@ -20,14 +20,16 @@ function [neg_info_out] = sample_negatives(neg_info_in)
             neg_info_out(i).filename = neg_info_in(j).filename;
             neg_info_out(i).width = neg_info_in(j).width;
             neg_info_out(i).height = neg_info_in(j).height;
-            neg_info_out(i).row = round(68 + ((neg_info_out(i).height-68)-68)*rand);
-            neg_info_out(i).col = round(36 + ((neg_info_out(i).width-36)-36)*rand);
+            row_pos=1:(neg_info_out(i).height-128+1);
+            col_pos=1:(neg_info_out(i).width-64+1);
+            neg_info_out(i).row = randsample(row_pos,1);
+            neg_info_out(i).col = randsample(col_pos,1);
             neg_info_out(i).size = 128;
             neg_info_out(i).pixels = neg_info_in(j).pixels;
             count = 0;
             while((~classify_region(neg_info_out(i).row, neg_info_out(i).col, neg_info_out(i).size, neg_info_out(i).pixels)))
-                neg_info_out(i).row = round(68 + ((neg_info_out(i).height-68)-68)*rand);
-                neg_info_out(i).col = round(36 + ((neg_info_out(i).width-36)-36)*rand);
+                neg_info_out(i).row = randsample(row_pos,1);
+                neg_info_out(i).col = randsample(col_pos,1);
                 count = count+1;
                 if(count>50)
                     i=i-1;

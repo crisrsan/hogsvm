@@ -8,10 +8,8 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
 	% VARIABLES INITIALIZATION %
 	k = 0; %Number of weak_classifers
 	f = 1.0; % FPR cascade level initialization
-    max = 2^i;
     d=0;
 	total_samples = length(neg_info)+length(pos_info); % Total number of samples used in the training level
-    reg = zeros(1,3);
 	res = zeros(total_samples, 1);   
     a=0;
     W = zeros(total_samples, 1); %Weight vector: samples adaboost weigths
@@ -25,7 +23,7 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
     % BUILD STRONG CLASSIFIER %
     disp('Building cascade level ');
     disp(i);
-   	while (f > fmax || d < dmin)
+   	while (f > fmax)
         k=k+1;
 		
         fprintf(f_track, '%s', strcat('WEAK CLASSIFIER NUMBER', num2str(k)));
@@ -35,7 +33,7 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
         
         % SELECT WEAK CLASSIFIER%
         train = cputime;
-		[weak_svm, weak_region, weak_alpha, W, weak_res, T, G] = select_svm (fv, N, neg_info, pos_info, path_positives, path_negatives, W);
+		[weak_svm, weak_region, weak_alpha, W, weak_res, G] = select_svm (fv, N, neg_info, pos_info, path_positives, path_negatives, W);
         train = train - cputime;
         fprintf(f_track, '%s', strcat('CPUTIME', num2str(train)));
         fprintf(f_track, '\n');
@@ -134,17 +132,20 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
 
         
         % GET THRESHOLD %
-        th = 0.5*a; % Classification Threshold initialization
+        th = (0.5*a)+0.01; % Classification Threshold initialization
         TPR = 0; 
         while (TPR < dmin)
             tp =0; fn = 0; fp = 0; tn = 0;
             count = zeros(total_samples,1);
-			
+			th = th-0.01;
+            if(th<0)
+                th=0;
+            end
             disp('Evaluating results with threshold...');
             disp(th);             
             
             for j=1:total_samples
-                if(res(j,1)<=th) count(j,1)=0;
+                if(res(j,1)<th) count(j,1)=0;
                 else count(j,1)=1;
                 end
             end
@@ -163,14 +164,6 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
             disp(TPR);
             disp(FPR);
             
-            if (th>0)
-                th = th-0.01;
-                if(th<0) 
-                    th=0;
-                end
-            elseif(th==0)
-                break;
-            end
         end
 		
 		
