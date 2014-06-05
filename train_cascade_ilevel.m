@@ -1,5 +1,5 @@
 
-function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, fmax, dmin, fv, N, pos_info, neg_info, path_positives, path_negatives)
+function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, fmax, dmin, fv, N, pos_info, neg_info)
 	% TRAIN CASCADE LEVEL i %
 	
 	% i LEVEL STRONG CLASSIFIER HELPER FILE %
@@ -33,7 +33,7 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
         
         % SELECT WEAK CLASSIFIER%
         train = cputime;
-		[weak_svm, weak_region, weak_alpha, W, weak_res, G] = select_svm (fv, N, neg_info, pos_info, path_positives, path_negatives, W);
+		[weak_svm, weak_region, weak_alpha, W, weak_res, G] = select_svm (fv, N, neg_info, pos_info, W);
         train = train - cputime;
         fprintf(f_track, '%s', strcat('CPUTIME', num2str(train)));
         fprintf(f_track, '\n');

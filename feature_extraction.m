@@ -32,7 +32,7 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
         c = (col-1)+region(1,2);
         s = region(1,3);
         img = pos_info(k).pixels;
-        I = img(r:(r+s-1), c:round(c+s-1));
+        I = img(r:(r+s-1), c:(round(c+s-1)));
         
         if(plot) 
             imshow(img);

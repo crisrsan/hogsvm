@@ -51,9 +51,9 @@ region(1,1) = str2double(fscanf(file,'%s', 1));
         s = region(1,3);
  
         %Select only the image region / block we want to evaluate --> (r1:r2, c1:c2)
-        I = img(r:(r+s-1), c:round(c+s-1));
+        I = img((r:(r+s-1)), (c:(round(c+s-1))));
                                
-        plot=;
+        plot=0;
         if(plot) 
             imshow(img);
             rectangle('Position',[col, row, size*ped_ratio, size], 'LineWidth', 1, 'EdgeColor', 'b');
@@ -62,13 +62,10 @@ region(1,1) = str2double(fscanf(file,'%s', 1));
             imshow(I)
             pause()
         end
-    
-             
-     
+
         HOG = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]); % 36-D vector
-       %HOG = extractHOGFeatures(I, 'NumBins', 6, 'BlockSIze', [3 3], 'CellSize', [floor(length(I)/3) floor(length(I)/3)]);
-        
-        
+       %HOG = extractHOGFeatures(I, 'NumBins', 6, 'BlockSIze', [3 3], 'CellSize', [floor(length(I)/3) floor(length(I)/3)]
+
         weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; 
         res = res + weak_res;
 
