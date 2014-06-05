@@ -45,7 +45,7 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
         
         
      
-        hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
+        hog = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]);
         
 %         path_to_rid_image = strcat(path_rid, pos_info(k).filename,'.rid');
 %         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
@@ -81,7 +81,7 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
         end
         
               
-        hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
+        hog = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]);
         
 %         path_to_rid_image = strcat(path_rid, neg_info(k).filename,'.rid');
 %         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
