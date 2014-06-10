@@ -143,7 +143,7 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
     end
         
     
-%     %NUMBER OF NEGATIVES = neg_w
+%   %NUMBER OF NEGATIVES = neg_w
 %     f = fopen(strcat(path_negatives, 'namelist.txt'), 'r');
 %     while (~feof(f))
 %         name = fscanf(f,'%s', 1);
@@ -157,16 +157,17 @@ function [neg_info, pos_info] = prepare_samples (path_negatives, path_positives,
 %                 %neg_info(i+j).row = round(64 + ((im.Height-64)-64)*rand);
 %                 %neg_info(i+j).col = round(32 + ((im.Width-32)-32)*rand);
 %                 %ENS CUREM EN SALUT
-%                 neg_info(i+j).row = round(68 + ((im.Height-68)-68)*rand);
-%                 neg_info(i+j).col = round(36 + ((im.Width-36)-36)*rand);
+%                 row_pos=1:(im.Height-128+1);
+%                 col_pos=1:(im.Width-64+1);
+%                 neg_info(i+j).row = randsample(row_pos,1);
+%                 neg_info(i+j).col = randsample(col_pos,1);
 %                 neg_info(i+j).size = 128;
-%                 neg_info(i+j).pixels = imread(neg_info(i).filename); 
-%                                               
+%                 neg_info(i+j).pixels = imread(neg_info(i).filename);         
 %             end
 %             i = i+w;
 %         end
 %     end
-%     fclose(f);
+%     fclose(f)
     
     
        

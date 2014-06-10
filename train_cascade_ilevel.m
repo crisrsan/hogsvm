@@ -1,5 +1,5 @@
 
-function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, fmax, dmin, fv, N, pos_info, neg_info)
+function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, fmax, dmin, fv, N, rect, pos_info, neg_info)
 	% TRAIN CASCADE LEVEL i %
 	
 	% i LEVEL STRONG CLASSIFIER HELPER FILE %
@@ -33,15 +33,17 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
         
         % SELECT WEAK CLASSIFIER%
         train = cputime;
-		[weak_svm, weak_region, weak_alpha, W, weak_res, G] = select_svm (fv, N, neg_info, pos_info, W);
-        train = train - cputime;
+		[weak_svm, weak_region, error, weak_alpha, W, weak_res, G] = select_svm (fv, N, rect, neg_info, pos_info, W);
+        train = cputime-train;
         fprintf(f_track, '%s', strcat('CPUTIME', num2str(train)));
         fprintf(f_track, '\n');
         if (weak_region == 0) % Not convergence found
             k= k-1;
             continue
         end
-        fprintf(f_track, '%s', strcat('Region: ', num2str(weak_region(1)), num2str(weak_region(2)), num2str(weak_region(3))));
+        fprintf(f_track, '%s', strcat('Region: ', num2str(weak_region(1)), num2str(weak_region(2)), num2str(weak_region(3)), num2str(weak_region(4))));
+        fprintf(f_track, '\n');
+        fprintf(f_track, '%s', strcat('Error: ', num2str(error)));
         fprintf(f_track, '\n');
         fprintf(f_track, '%s', strcat('Alpha: ', num2str(weak_alpha)));
         fprintf(f_track, '\n');
@@ -57,67 +59,13 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
         fprintf(f_class, ' ');
         fprintf(f_class, '%d', weak_region(3));
         fprintf(f_class, ' ');
-        %fprintf(f_class, '%d', total_samples);
-        %fprintf(f_class, ' ');
+        fprintf(f_class, '%d', weak_region(4));
+        fprintf(f_class, ' ');
         fprintf(f_class, '%s', matfile);
         fprintf(f_class, ' ');
         fprintf(f_class, '%d', weak_alpha);
         fprintf(f_class, ' ');
 		
-%         % ADD NEW WEAK CLASSIFIER TO THE i LEVEL STRONG CLASSIFIER%
-%         fprintf(f_write, '%d', weak_region(1));
-%         fprintf(f_write, ' ');
-%         fprintf(f_write, '%d', weak_region(2));
-%         fprintf(f_write, ' ');
-%         fprintf(f_write, '%d', weak_region(3));
-%         fprintf(f_write, ' ');
-%         %fprintf(f_write, '%d', total_samples);
-%         %fprintf(f_write, ' ');
-%         for m=1:total_samples
-%             for n=1:fv
-%                 fprintf(f_write, '%d', T(m,n));
-%                 fprintf(f_write, ' ');
-%             end
-%         end
-%         fprintf(f_write, '%s', matfile);
-%         fprintf(f_write, ' ');
-%         fprintf(f_write, '%d', weak_alpha);
-%         fprintf(f_write, ' ');
-%         
-%         % EVALUATE current POS&NEG samples with i level strong classifier %
-%         disp('Evaluating strong classifier...');
-%         alpha = 0;
-%         res = zeros(total_samples,1);
-%         f_read = fopen('classifiers/ilevel_classifier.txt', 'r');
-%         
-%         for j=1:k
-% 			reg(1,1) = str2double(fscanf(f_read,'%s', 1));
-%             reg(1,2) = str2double(fscanf(f_read,'%s', 1));
-%             reg(1,3) = str2double(fscanf(f_read,'%s', 1));
-%             %samples = str2double(fscanf(f_read,'%s', 1));
-%             %if (res == 0) 
-%                 %res = zeros (samples,1);
-%             %end
-%             HOG = zeros(total_samples, fv);
-%           
-%             for m=1:total_samples
-%                 for n=1:fv
-%                      HOG(m,n) = str2double(fscanf(f_read, '%s', 1));
-%                 end
-%             end
-%             SVM_name = fscanf(f_read, '%s', 1);
-%             a = str2double(fscanf(f_read, '%s', 1));
-%        
-%             structSVM = load (SVM_name);
-%             %[HOG, G]=feature_extraction(reg, pos_info, neg_info, path_positives, path_negatives, 0);
-%             
-%             weak_res = (svmclassify (structSVM.weak_svm, HOG))*a; 
-%             res = res + weak_res;
-%             alpha = alpha + a;           
-%         end
-%         fclose(f_read);
-        
-
 
         % EVALUATE current POS&NEG samples with i level strong classifier %
         if(weak_alpha < 0)
@@ -127,8 +75,6 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
         res = res + (weak_res.*weak_alpha);
         res
         a = a + weak_alpha;
-
-
 
         
         % GET THRESHOLD %
@@ -175,15 +121,15 @@ function [f, d, f_class, f_track] = train_cascade_ilevel (i, f_class, f_track, f
         fprintf(f_track, '%s', strcat('FPR: ', num2str(FPR)));
         fprintf(f_track, '\n');
   
-	f = FPR;
-    d = TPR;
+        f = FPR;
+        d = TPR;
     end
    
 
-        disp('Weak classifier - False Positive Rate - True Positive Rate')
-        k
-        f
-        d
+    disp('Weak classifier - False Positive Rate - True Positive Rate')
+    k
+    f
+    d
     
 	% ADD i level THRESHOLD and END MARKER (999999) TO THE CASCADE %
     fprintf(f_class, '%d', 999999);

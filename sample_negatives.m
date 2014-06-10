@@ -8,7 +8,7 @@ function [neg_info_out] = sample_negatives(neg_info_in)
 %	W is the generated number of negative samples per background image.
     
 	
-%NUMBER OF NEGATIVES = NUMBER OF POSITIVES
+%RESAMPLE SAME NUMBER OF NEGATIVES
     disp('Preparing new negative samples (background images) ...');
   
    	neg_info_out = struct('filename', {}, 'width', {}, 'height', {}, 'row', {}, 'col', {}, 'size', {}, 'pixels', {});

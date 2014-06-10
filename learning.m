@@ -1,16 +1,16 @@
 % CRISTINA RUIZ SANCHO
 % HOG + SVM
 
-t = cputime;
+t_inici = cputime;
 % TRAINING PARAMETERS DEFINITION %
 % Some of them could be asked as input arguments.
 F_target = 1e-6;    % FPR global target
-fmax = 0.7;         % FPR cascade level target
-dmin = 0.9975;      % TPR cascade level target
+fmax = 0.65;         % FPR cascade level target
+dmin = 0.995;        % TPR cascade level target
 fv = 36;            % Feature vector HOG - defined according to goh_extractor parameters.
 neg_w = 3;          % Number of windows per negative image
 N = 5;				% Number of training blocks/svm per weak classifier selection.
-
+rect = 0;           % Allow rectangular blocks evaluation.
 
 
 path_negatives='/nobackup/server/users/criru691/Dataset/INRIA/train/train_negatives/';
@@ -52,14 +52,19 @@ while (F > F_target)
     fprintf(f_track, '\n');
     fprintf(f_track, '%s', strcat(num2str(total_samples),'samples:', num2str(length(pos_info)), 'positives &', num2str(length(neg_info)), ' negatives.'));
     fprintf(f_track, '\n');
-	      
-	[f,d, f_class, f_track]=train_cascade_ilevel(i, f_class, f_track, fmax, dmin, fv, N, pos_info, neg_info);
-	
+	 
+    t_stage_inici=cputime;
+	[f,d, f_class, f_track]=train_cascade_ilevel(i, f_class, f_track, fmax, dmin, fv, N, rect, pos_info, neg_info);
+	t_stage=cputime-t_stage_inici;
 	% Computation of global accuracy rates: FPR = F and TPR = D.
 	F = F * f;
     D = D * d;
 	
-    
+    t_final = cputime-t_inici;
+    fprintf(f_track, '%s', strcat('Computation time STAGE: ', num2str(t_stage)));
+    fprintf(f_track, '\n');
+    fprintf(f_track, '%s', strcat('Computation time TOTAL: ', num2str(t_final)));
+    fprintf(f_track, '\n');
     fprintf(f_track, '%s', strcat('Final stage F: ', num2str(F)));
     fprintf(f_track, '\n');
     fprintf(f_track, '%s', strcat('Final stage D: ', num2str(D)));

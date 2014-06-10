@@ -30,28 +30,39 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
         % Feature block coordinates: r, c, s.
         r = (row-1)+region(1,1);
         c = (col-1)+region(1,2);
-        s = region(1,3);
+        s1 = region(1,3);
+        s2 = region(1,3)*region(1,4);
         img = pos_info(k).pixels;
-        I = img(r:(r+s-1), c:(round(c+s-1)));
+        I = img(r:(r+s1-1), c:(round(c+s2-1)));
         
         if(plot) 
             imshow(img);
             rectangle('Position',[col, row, size*ped_ratio, size], 'LineWidth', 1, 'EdgeColor', 'b');
-            rectangle('Position', [c, r, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            rectangle('Position', [c, r, s2, s1], 'LineWidth', 1, 'EdgeColor', 'r');
             pause()
             imshow(I)
             pause()
         end
         
-        
-     
-        hog = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]);
+
+        switch (region(1,4))
+            case 1
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
+            case 0.5
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/4)]);
+            case 2
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/4) floor(length(I)/2)]);
+            otherwise
+                disp('WRONG ASPECT RATIO!');
+        end
+
+        %hog = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]);
         
 %         path_to_rid_image = strcat(path_rid, pos_info(k).filename,'.rid');
 %         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
 %         [~ , res] = system(myCommand);
 %         hog = str2num(res); 
-          
+        
         T (k,:) = hog;
         G (k,1) = 1;
     end
@@ -67,21 +78,33 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
         % Feature block coordinates: r, c, s.
         r = (row-1)+region(1,1);
         c = (col-1)+region(1,2);
-        s = region(1,3);
+        s1 = region(1,3);
+        s2 = region(1,3)*region(1,4);
         img = neg_info(k).pixels;
-        I = img(r:(r+s-1), c:round(c+s-1));
+        I = img(r:(r+s1-1), c:(round(c+s2-1)));
         
         if(plot) 
             imshow(img);
             rectangle('Position',[col, row, size*ped_ratio, size], 'LineWidth', 1, 'EdgeColor', 'b');
-            rectangle('Position', [c, r, s, s], 'LineWidth', 1, 'EdgeColor', 'r');
+            rectangle('Position', [c, r, s2, s1], 'LineWidth', 1, 'EdgeColor', 'r');
             pause()
             imshow(I)
             pause()
         end
         
+        switch (region(1,4))
+            case 1
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) round(length(I)/2)]);
+            case 0.5
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) round(length(I)/4)]);
+            case 2
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/4) round(length(I)/2)]);
+            otherwise
+                disp('WRONG ASPECT RATIO!')
+        end
+        
               
-        hog = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]);
+        %hog = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]);
         
 %         path_to_rid_image = strcat(path_rid, neg_info(k).filename,'.rid');
 %         myCommand = ['./goh_extractor ' path_to_rid_image ' ' int2str(r) ' ' int2str(c) ' ' int2str(s)];
