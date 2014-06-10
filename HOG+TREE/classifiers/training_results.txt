@@ -1,0 +1,133 @@
+CASCADE LEVEL1
+4832samples:2416positives &2416 negatives.
+WEAK CLASSIFIER NUMBER1
+CPUTIME80.36
+Region:0.195310.0156250.906251
+Alpha:3.4829
+Threshold:0
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+CPUTIME83.12
+Region:0.382810.0156250.8751
+Alpha:3.4208
+Threshold:3.4119
+TPR:0.99917
+FPR:0.056291
+Final stage threshold:3.4119
+Computation time STAGE:164.12
+Computation time TOTAL:229.97
+Final stage F:0.056291
+Final stage D:0.99917
+
+CASCADE LEVEL2
+4832samples:2416positives &2416 negatives.
+WEAK CLASSIFIER NUMBER1
+CPUTIME75.51
+Region:0.132810.0156250.93751
+Alpha:3.2695
+Threshold:0
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+CPUTIME88.42
+Region:0.445310.0156250.718751
+Alpha:3.2217
+Threshold:3.2156
+TPR:0.99834
+FPR:0.06457
+Final stage threshold:3.2156
+Computation time STAGE:164.41
+Computation time TOTAL:1198.58
+Final stage F:0.0036347
+Final stage D:0.99752
+
+CASCADE LEVEL3
+4832samples:2416positives &2416 negatives.
+WEAK CLASSIFIER NUMBER1
+CPUTIME79.43
+Region:0.507810.0156250.968751
+Alpha:3.1116
+Threshold:0
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+CPUTIME80.7
+Region:0.445310.0156250.31251
+Alpha:3.1567
+Threshold:3.1041
+TPR:0.99793
+FPR:0.094371
+Final stage threshold:3.1041
+Computation time STAGE:160.59
+Computation time TOTAL:3454.12
+Final stage F:0.00034301
+Final stage D:0.99545
+
+CASCADE LEVEL4
+4832samples:2416positives &2416 negatives.
+WEAK CLASSIFIER NUMBER1
+CPUTIME77.1
+Region:0.632810.0156250.593751
+Alpha:3.0816
+Threshold:0
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+CPUTIME83.05
+Region:0.757810.640620.3751
+Alpha:3.1422
+Threshold:3.0719
+TPR:0.99834
+FPR:0.089404
+Final stage threshold:3.0719
+Computation time STAGE:160.62
+Computation time TOTAL:6477.1
+Final stage F:3.0667e-05
+Final stage D:0.99381
+
+CASCADE LEVEL5
+4832samples:2416positives &2416 negatives.
+WEAK CLASSIFIER NUMBER1
+CPUTIME79.38
+Region:0.632810.390620.3751
+Alpha:3.1269
+Threshold:0
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+CPUTIME78.67
+Region:0.632810.0156250.218751
+Alpha:3.0233
+Threshold:3.0151
+TPR:0.99917
+FPR:0.10058
+Final stage threshold:3.0151
+Computation time STAGE:158.56
+Computation time TOTAL:11022.45
+Final stage F:3.0844e-06
+Final stage D:0.99298
+
+CASCADE LEVEL6
+4832samples:2416positives &2416 negatives.
+WEAK CLASSIFIER NUMBER1
+CPUTIME80.69
+Region:0.195310.0156250.468751
+Alpha:3.2579
+Threshold:0
+TPR:1
+FPR:1
+WEAK CLASSIFIER NUMBER2
+CPUTIME82.13
+Region:0.570310.140620.8751
+Alpha:3.1057
+Threshold:3.1018
+TPR:0.99876
+FPR:0.083609
+Final stage threshold:3.1018
+Computation time STAGE:163.3
+Computation time TOTAL:17221.45
+Final stage F:2.5789e-07
+Final stage D:0.99175
+
+Time consumption:31587.25
