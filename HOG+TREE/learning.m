@@ -78,5 +78,5 @@ while (F > F_target)
    
 end
 fclose(f_class);
-fprintf(f_track, '%s', strcat('Time consumption: ', num2str(cputime-t)));
+fprintf(f_track, '%s', strcat('Time consumption: ', num2str(cputime-t_inici)));
 fclose(f_track);

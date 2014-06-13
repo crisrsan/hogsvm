@@ -68,15 +68,18 @@ region(1,1) = str2double(fscanf(file,'%s', 1));
         
         switch (region(1,4))
             case 1
+
                 HOG = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
             case 0.5
+
                 HOG = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/4)]);
             case 2
+   
                 HOG = extractHOGFeatures(I, 'CellSize', [floor(length(I)/4) floor(length(I)/2)]);
             otherwise
                 disp('WRONG ASPECT RATIO!')
         end
-        length(HOG)
+
         %HOG = extractHOGFeatures(I, 'CellSize', [round(length(I)/2) round(length(I)/2)]); % 36-D vector
         %HOG = extractHOGFeatures(I, 'NumBins', 6, 'BlockSIze', [3 3], 'CellSize', [floor(length(I)/3) floor(length(I)/3)]
 

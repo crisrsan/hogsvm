@@ -94,11 +94,11 @@ function [T, G] = feature_extraction(fv, region, pos_info, neg_info, plot)
         
         switch (region(1,4))
             case 1
-                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) round(length(I)/2)]);
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/2)]);
             case 0.5
-                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) round(length(I)/4)]);
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/2) floor(length(I)/4)]);
             case 2
-                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/4) round(length(I)/2)]);
+                hog = extractHOGFeatures(I, 'CellSize', [floor(length(I)/4) floor(length(I)/2)]);
             otherwise
                 disp('WRONG ASPECT RATIO!')
         end

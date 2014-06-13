@@ -1,10 +1,10 @@
 % CRISTINA RUIZ SANCHO
 % HOG + SVM
 
-function [n, det]= test_pos(path_images)
+function [n, det, t_final, t_window]= test_pos(path_images)
 %addpath('/nobackup/server/users/criru691/HOG+SVM');
-
- 
+    t_inici=cputime;
+    t_window=0;
 	f= fopen(strcat(path_images, 'namelist.txt'), 'r');
     n=0;
     det =0;
@@ -16,8 +16,8 @@ function [n, det]= test_pos(path_images)
             path = strcat(path_images, name);
             im=imfinfo(path);
             s = 128;
-            r = (im.Height/2)-s/2+1;
-            c = (im.Width/2)-(s*0.5/2)+1;
+            r = round((im.Height/2)-s/2+1);
+            c = round((im.Width/2)-(s*0.5/2)+1);
            
         
             plot = 0;
@@ -27,9 +27,11 @@ function [n, det]= test_pos(path_images)
                  rectangle('Position',[c, r, s*0.5, s], 'LineWidth', 2, 'EdgeColor', 'b');
                  pause();
             end    
-            
-           [ped] = classify_region(r, c, s, image);
-                        
+           
+	    t1=cputime; 
+            [ped] = classify_region(r, c, s, image);
+	    t2=cputime-t1;
+            t_window=t_window+t2; 
             if (ped ==1)
                 %PEDESTRIAN DETECTED!
                 disp('Pedestrian detected!');
@@ -42,8 +44,8 @@ function [n, det]= test_pos(path_images)
         end
     end
 	fclose(f);   
-
-
+t_window=t_window/n;
+t_final=cputime-t_inici;
 disp('SCANNING FINISHED')
 
 end
