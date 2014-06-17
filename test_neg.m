@@ -43,9 +43,7 @@ function [n, det, t_final, t_window]= test_neg(path_images)
                     rectangle('Position',[c, r, s*0.5, s], 'LineWidth', 2, 'EdgeColor', 'b');
                     pause();
                 end
-                r
-                c
-                path
+     
                 t1=cputime;
                 [ped] = classify_region(r, c, s, image);
                 t2=cputime-t1;

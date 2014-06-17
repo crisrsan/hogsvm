@@ -11,8 +11,9 @@ function [n, det, t_final, t_window]= test_pos(path_images)
     while (~feof(f))
     %for i=1:50    
         name = fscanf(f,'%s', 1);
-        n = n+1; 
+        
         if(~isempty(name))
+		n = n+1; 
             path = strcat(path_images, name);
             im=imfinfo(path);
             s = 128;
